@@ -1,0 +1,24 @@
+server:
+  port: 8090
+## Mybatis plus配置
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.lmj.estate.entity
+  configuration:
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
+##Spring 配置
+spring:
+  # DataSourceProperties
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/manage_test?characterEncoding=utf-8&useSSL=false&serverTimezone=Hongkong
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+## 日志配置
+logging:
+  level:
+    com.sctelcp.manage: debug
+  pattern:
+    dateformat: HH:mm:ss:SSS
+  file:
+    path: "logs/"
