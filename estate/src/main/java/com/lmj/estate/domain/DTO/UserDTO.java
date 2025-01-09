@@ -14,7 +14,7 @@ public class UserDTO {
     private Integer age;
     private UserSex sex;
     private String phone;
-    private String address;
+    private Double balance;
     private UserRole roleId;
     private UserStatus status;
 }

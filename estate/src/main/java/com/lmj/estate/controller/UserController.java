@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -22,6 +23,7 @@ public class UserController {
     @PostMapping("/user")
     public R<Boolean> addUser(@RequestBody UserDTO userDTO){
         User user = new User();
+        user.setCreateTime(LocalDateTime.now());
         BeanUtils.copyProperties(userDTO,user);
         userService.save(user);
         return R.ok();

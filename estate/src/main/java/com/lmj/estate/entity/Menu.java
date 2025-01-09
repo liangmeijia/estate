@@ -2,8 +2,11 @@ package com.lmj.estate.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Data
 @TableName(value = "menu")
@@ -18,4 +21,8 @@ public class Menu {
     private String menuRight;
     private String menuComponent;
     private String menuIcon;
+    @TableLogic
+    private Integer deleteFlag;
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
 }

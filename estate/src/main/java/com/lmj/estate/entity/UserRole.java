@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum UserRole {
     ADMIN(0,"管理员"),
-    USER(1,"普通用户");
+    USER(1,"业主");
     @EnumValue
     private Integer value;
     @JsonValue
