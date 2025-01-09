@@ -18,8 +18,10 @@ import com.lmj.estate.entity.UserStatus;
 import com.lmj.estate.service.UserService;
 import com.lmj.estate.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -91,6 +93,32 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         List<Menu> menus = menuDao.selectList(menuLQW);
         vo.setMenus(menus);
         return vo;
+    }
+
+    @Override
+    public void addUser(UserDTO userDTO) {
+        User user = new User();
+        BeanUtils.copyProperties(userDTO,user);
+        user.setCreateTime(LocalDateTime.now());
+        baseMapper.insert(user);
+    }
+
+    @Override
+    public UserVO findUserById(long id) {
+        User user = baseMapper.selectById(id);
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user,userVO);
+        return userVO;
+    }
+
+    @Override
+    public void updateUser(UserDTO userDTO) {
+        User user = new User();
+        BeanUtils.copyProperties(userDTO,user);
+        user.setUpdateTime(LocalDateTime.now());
+        LambdaQueryWrapper<User> userLQW = new LambdaQueryWrapper();
+        userLQW.eq(User::getId,user.getId());
+        baseMapper.update(user,userLQW);
     }
 
 }

@@ -15,4 +15,10 @@ public interface UserService extends IService<User> {
     PageDTO<UserVO> findUsersPage(UserQuery userQuery);
 
     UserLoginVO login(String userName, String password);
+
+    void addUser(UserDTO userDTO);
+
+    UserVO findUserById(long id);
+
+    void updateUser(UserDTO userDTO);
 }

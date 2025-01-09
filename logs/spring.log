@@ -494,3 +494,92 @@
 17:06:51:111 DEBUG 62752 --- [http-nio-8090-exec-10] com.lmj.estate.dao.UserDao.selectPage    : <==      Total: 2
 17:07:06:408  INFO 62752 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 17:07:06:412  INFO 62752 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+17:37:32:660  INFO 71420 --- [main] com.lmj.estate.EstateApplication         : Starting EstateApplication using Java 1.8.0_351 on xzz with PID 71420 (D:\code\java\estate-management\estate\target\classes started by LENOVO in D:\code\java\estate-management)
+17:37:32:662 DEBUG 71420 --- [main] com.lmj.estate.EstateApplication         : Running with Spring Boot v2.6.13, Spring v5.3.23
+17:37:32:662  INFO 71420 --- [main] com.lmj.estate.EstateApplication         : No active profile set, falling back to 1 default profile: "default"
+17:37:33:474  INFO 71420 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8090 (http)
+17:37:33:481  INFO 71420 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+17:37:33:481  INFO 71420 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.68]
+17:37:33:591  INFO 71420 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+17:37:33:591  INFO 71420 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 894 ms
+17:37:34:578  INFO 71420 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8090 (http) with context path ''
+17:37:34:586  INFO 71420 --- [main] com.lmj.estate.EstateApplication         : Started EstateApplication in 2.274 seconds (JVM running for 2.911)
+17:38:00:095  INFO 71420 --- [http-nio-8090-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+17:38:00:095  INFO 71420 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+17:38:00:096  INFO 71420 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+17:38:00:224  INFO 71420 --- [http-nio-8090-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+17:38:00:323  INFO 71420 --- [http-nio-8090-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+17:38:00:328 DEBUG 71420 --- [http-nio-8090-exec-2] com.lmj.estate.dao.UserDao.selectList    : ==>  Preparing: SELECT id,name,password,age,sex,phone,email,balance,role_id,status,delete_flag,create_time,update_time FROM user WHERE delete_flag=0 AND (name = ? AND password = ?)
+17:38:00:346 DEBUG 71420 --- [http-nio-8090-exec-2] com.lmj.estate.dao.UserDao.selectList    : ==> Parameters: 物业总部(String), 123456(String)
+17:38:00:364 DEBUG 71420 --- [http-nio-8090-exec-2] com.lmj.estate.dao.UserDao.selectList    : <==      Total: 1
+17:38:00:368 DEBUG 71420 --- [http-nio-8090-exec-2] c.l.estate.service.impl.UserServiceImpl  : 用户:物业总部 登录信息认证成功
+17:38:00:369 DEBUG 71420 --- [http-nio-8090-exec-2] com.lmj.estate.utils.JwtUtils            : 密钥：/vB/38AtDaruzg6F1RkbX8cMYQdylgQHHqsoDZi1kqA=
+17:38:00:689 DEBUG 71420 --- [http-nio-8090-exec-2] c.l.estate.service.impl.UserServiceImpl  : JWT Token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM2NDE1NDgwLCJleHAiOjE3MzY0MTYwODB9.nxsSEAxm15iB6UtxpQGdTfwkP_Hz7vwVwuRi7cJXkRw
+17:38:00:737 DEBUG 71420 --- [http-nio-8090-exec-2] com.lmj.estate.dao.MenuDao.selectList    : ==>  Preparing: SELECT id,menu_code,menu_name,menu_level,menu_parent_code,menu_click,menu_right,menu_component,menu_icon,delete_flag,create_time,update_time FROM menu WHERE delete_flag=0 AND (menu_right LIKE ?)
+17:38:00:737 DEBUG 71420 --- [http-nio-8090-exec-2] com.lmj.estate.dao.MenuDao.selectList    : ==> Parameters: %0%(String)
+17:38:00:740 DEBUG 71420 --- [http-nio-8090-exec-2] com.lmj.estate.dao.MenuDao.selectList    : <==      Total: 2
+17:38:03:474 DEBUG 71420 --- [http-nio-8090-exec-4] c.l.e.dao.UserDao.selectPage_mpCount     : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ?)
+17:38:03:474 DEBUG 71420 --- [http-nio-8090-exec-4] c.l.e.dao.UserDao.selectPage_mpCount     : ==> Parameters: %%(String)
+17:38:03:475 DEBUG 71420 --- [http-nio-8090-exec-4] c.l.e.dao.UserDao.selectPage_mpCount     : <==      Total: 1
+17:38:03:480 DEBUG 71420 --- [http-nio-8090-exec-4] com.lmj.estate.dao.UserDao.selectPage    : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ?) ORDER BY age ASC LIMIT ?
+17:38:03:480 DEBUG 71420 --- [http-nio-8090-exec-4] com.lmj.estate.dao.UserDao.selectPage    : ==> Parameters: %%(String), 10(Long)
+17:38:03:482 DEBUG 71420 --- [http-nio-8090-exec-4] com.lmj.estate.dao.UserDao.selectPage    : <==      Total: 2
+17:38:09:780 DEBUG 71420 --- [http-nio-8090-exec-5] c.l.e.dao.UserDao.selectPage_mpCount     : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ? AND role_id = ?)
+17:38:09:780 DEBUG 71420 --- [http-nio-8090-exec-5] c.l.e.dao.UserDao.selectPage_mpCount     : ==> Parameters: %%(String), 0(Integer)
+17:38:09:782 DEBUG 71420 --- [http-nio-8090-exec-5] c.l.e.dao.UserDao.selectPage_mpCount     : <==      Total: 1
+17:38:09:785 DEBUG 71420 --- [http-nio-8090-exec-5] com.lmj.estate.dao.UserDao.selectPage    : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ? AND role_id = ?) ORDER BY age ASC LIMIT ?
+17:38:09:785 DEBUG 71420 --- [http-nio-8090-exec-5] com.lmj.estate.dao.UserDao.selectPage    : ==> Parameters: %%(String), 0(Integer), 10(Long)
+17:38:09:786 DEBUG 71420 --- [http-nio-8090-exec-5] com.lmj.estate.dao.UserDao.selectPage    : <==      Total: 1
+17:38:11:678 DEBUG 71420 --- [http-nio-8090-exec-6] c.l.e.dao.UserDao.selectPage_mpCount     : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ? AND role_id = ?)
+17:38:11:679 DEBUG 71420 --- [http-nio-8090-exec-6] c.l.e.dao.UserDao.selectPage_mpCount     : ==> Parameters: %%(String), 1(Integer)
+17:38:11:680 DEBUG 71420 --- [http-nio-8090-exec-6] c.l.e.dao.UserDao.selectPage_mpCount     : <==      Total: 1
+17:38:11:682 DEBUG 71420 --- [http-nio-8090-exec-6] com.lmj.estate.dao.UserDao.selectPage    : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ? AND role_id = ?) ORDER BY age ASC LIMIT ?
+17:38:11:682 DEBUG 71420 --- [http-nio-8090-exec-6] com.lmj.estate.dao.UserDao.selectPage    : ==> Parameters: %%(String), 1(Integer), 10(Long)
+17:38:11:683 DEBUG 71420 --- [http-nio-8090-exec-6] com.lmj.estate.dao.UserDao.selectPage    : <==      Total: 1
+17:38:13:640 DEBUG 71420 --- [http-nio-8090-exec-7] c.l.e.dao.UserDao.selectPage_mpCount     : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ?)
+17:38:13:641 DEBUG 71420 --- [http-nio-8090-exec-7] c.l.e.dao.UserDao.selectPage_mpCount     : ==> Parameters: %%(String)
+17:38:13:642 DEBUG 71420 --- [http-nio-8090-exec-7] c.l.e.dao.UserDao.selectPage_mpCount     : <==      Total: 1
+17:38:13:643 DEBUG 71420 --- [http-nio-8090-exec-7] com.lmj.estate.dao.UserDao.selectPage    : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ?) ORDER BY age ASC LIMIT ?
+17:38:13:644 DEBUG 71420 --- [http-nio-8090-exec-7] com.lmj.estate.dao.UserDao.selectPage    : ==> Parameters: %%(String), 10(Long)
+17:38:13:645 DEBUG 71420 --- [http-nio-8090-exec-7] com.lmj.estate.dao.UserDao.selectPage    : <==      Total: 2
+17:38:15:842 DEBUG 71420 --- [http-nio-8090-exec-8] c.l.e.dao.UserDao.selectPage_mpCount     : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ? AND status = ?)
+17:38:15:843 DEBUG 71420 --- [http-nio-8090-exec-8] c.l.e.dao.UserDao.selectPage_mpCount     : ==> Parameters: %%(String), 0(Integer)
+17:38:15:843 DEBUG 71420 --- [http-nio-8090-exec-8] c.l.e.dao.UserDao.selectPage_mpCount     : <==      Total: 1
+17:38:15:845 DEBUG 71420 --- [http-nio-8090-exec-8] com.lmj.estate.dao.UserDao.selectPage    : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ? AND status = ?) ORDER BY age ASC LIMIT ?
+17:38:15:846 DEBUG 71420 --- [http-nio-8090-exec-8] com.lmj.estate.dao.UserDao.selectPage    : ==> Parameters: %%(String), 0(Integer), 10(Long)
+17:38:15:847 DEBUG 71420 --- [http-nio-8090-exec-8] com.lmj.estate.dao.UserDao.selectPage    : <==      Total: 2
+17:38:16:950 DEBUG 71420 --- [http-nio-8090-exec-9] c.l.e.dao.UserDao.selectPage_mpCount     : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ? AND status = ?)
+17:38:16:950 DEBUG 71420 --- [http-nio-8090-exec-9] c.l.e.dao.UserDao.selectPage_mpCount     : ==> Parameters: %%(String), 0(Integer)
+17:38:16:951 DEBUG 71420 --- [http-nio-8090-exec-9] c.l.e.dao.UserDao.selectPage_mpCount     : <==      Total: 1
+17:38:16:958 DEBUG 71420 --- [http-nio-8090-exec-9] com.lmj.estate.dao.UserDao.selectPage    : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ? AND status = ?) ORDER BY age ASC LIMIT ?
+17:38:16:958 DEBUG 71420 --- [http-nio-8090-exec-9] com.lmj.estate.dao.UserDao.selectPage    : ==> Parameters: %%(String), 0(Integer), 10(Long)
+17:38:16:960 DEBUG 71420 --- [http-nio-8090-exec-9] com.lmj.estate.dao.UserDao.selectPage    : <==      Total: 2
+17:39:12:057 DEBUG 71420 --- [http-nio-8090-exec-1] com.lmj.estate.dao.UserDao.insert        : ==>  Preparing: INSERT INTO user ( name, password, age, sex, phone, email, role_id, status, create_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+17:39:12:061 DEBUG 71420 --- [http-nio-8090-exec-1] com.lmj.estate.dao.UserDao.insert        : ==> Parameters: 业主测试2(String), 123456(String), 55(Integer), 0(Integer), 19983247766(String), lala@qq.com(String), 1(Integer), 0(Integer), 2025-01-09T17:39:12.054(LocalDateTime)
+17:39:12:075 DEBUG 71420 --- [http-nio-8090-exec-1] com.lmj.estate.dao.UserDao.insert        : <==    Updates: 1
+17:39:12:087 DEBUG 71420 --- [http-nio-8090-exec-2] c.l.e.dao.UserDao.selectPage_mpCount     : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ?)
+17:39:12:088 DEBUG 71420 --- [http-nio-8090-exec-2] c.l.e.dao.UserDao.selectPage_mpCount     : ==> Parameters: %%(String)
+17:39:12:089 DEBUG 71420 --- [http-nio-8090-exec-2] c.l.e.dao.UserDao.selectPage_mpCount     : <==      Total: 1
+17:39:12:092 DEBUG 71420 --- [http-nio-8090-exec-2] com.lmj.estate.dao.UserDao.selectPage    : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ?) ORDER BY age ASC LIMIT ?
+17:39:12:093 DEBUG 71420 --- [http-nio-8090-exec-2] com.lmj.estate.dao.UserDao.selectPage    : ==> Parameters: %%(String), 10(Long)
+17:39:12:096 DEBUG 71420 --- [http-nio-8090-exec-2] com.lmj.estate.dao.UserDao.selectPage    : <==      Total: 3
+17:39:39:252 DEBUG 71420 --- [http-nio-8090-exec-4] com.lmj.estate.dao.UserDao.update        : ==>  Preparing: UPDATE user SET name=?, password=?, age=?, sex=?, phone=?, email=?, balance=?, role_id=?, status=?, update_time=? WHERE delete_flag=0 AND (id = ?)
+17:39:39:256 DEBUG 71420 --- [http-nio-8090-exec-4] com.lmj.estate.dao.UserDao.update        : ==> Parameters: 业主测试2(String), 123456(String), 34(Integer), 1(Integer), 19983247766(String), lala@qq.com(String), 0.0(Double), 1(Integer), 0(Integer), 2025-01-09T17:39:39.238(LocalDateTime), 16(Long)
+17:39:39:268 DEBUG 71420 --- [http-nio-8090-exec-4] com.lmj.estate.dao.UserDao.update        : <==    Updates: 1
+17:39:39:277 DEBUG 71420 --- [http-nio-8090-exec-5] c.l.e.dao.UserDao.selectPage_mpCount     : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ?)
+17:39:39:277 DEBUG 71420 --- [http-nio-8090-exec-5] c.l.e.dao.UserDao.selectPage_mpCount     : ==> Parameters: %%(String)
+17:39:39:279 DEBUG 71420 --- [http-nio-8090-exec-5] c.l.e.dao.UserDao.selectPage_mpCount     : <==      Total: 1
+17:39:39:281 DEBUG 71420 --- [http-nio-8090-exec-5] com.lmj.estate.dao.UserDao.selectPage    : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ?) ORDER BY age ASC LIMIT ?
+17:39:39:281 DEBUG 71420 --- [http-nio-8090-exec-5] com.lmj.estate.dao.UserDao.selectPage    : ==> Parameters: %%(String), 10(Long)
+17:39:39:285 DEBUG 71420 --- [http-nio-8090-exec-5] com.lmj.estate.dao.UserDao.selectPage    : <==      Total: 3
+17:39:51:810 DEBUG 71420 --- [http-nio-8090-exec-7] com.lmj.estate.dao.UserDao.deleteById    : ==>  Preparing: UPDATE user SET delete_flag=1 WHERE id=? AND delete_flag=0
+17:39:51:812 DEBUG 71420 --- [http-nio-8090-exec-7] com.lmj.estate.dao.UserDao.deleteById    : ==> Parameters: 16(Long)
+17:39:51:823 DEBUG 71420 --- [http-nio-8090-exec-7] com.lmj.estate.dao.UserDao.deleteById    : <==    Updates: 1
+17:39:51:831 DEBUG 71420 --- [http-nio-8090-exec-8] c.l.e.dao.UserDao.selectPage_mpCount     : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ?)
+17:39:51:831 DEBUG 71420 --- [http-nio-8090-exec-8] c.l.e.dao.UserDao.selectPage_mpCount     : ==> Parameters: %%(String)
+17:39:51:832 DEBUG 71420 --- [http-nio-8090-exec-8] c.l.e.dao.UserDao.selectPage_mpCount     : <==      Total: 1
+17:39:51:834 DEBUG 71420 --- [http-nio-8090-exec-8] com.lmj.estate.dao.UserDao.selectPage    : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ?) ORDER BY age ASC LIMIT ?
+17:39:51:834 DEBUG 71420 --- [http-nio-8090-exec-8] com.lmj.estate.dao.UserDao.selectPage    : ==> Parameters: %%(String), 10(Long)
+17:39:51:836 DEBUG 71420 --- [http-nio-8090-exec-8] com.lmj.estate.dao.UserDao.selectPage    : <==      Total: 2
+17:40:27:399  INFO 71420 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+17:40:27:403  INFO 71420 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

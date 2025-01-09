@@ -22,18 +22,12 @@ public class UserController {
 
     @PostMapping("/user")
     public R<Boolean> addUser(@RequestBody UserDTO userDTO){
-        User user = new User();
-        user.setCreateTime(LocalDateTime.now());
-        BeanUtils.copyProperties(userDTO,user);
-        userService.save(user);
+        userService.addUser(userDTO);
         return R.ok();
     }
     @GetMapping("/user/{id}")
     public R<UserVO> getUser(@PathVariable("id") long id){
-        User user = userService.getById(id);
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(user,userVO);
-        return R.ok(userVO);
+        return R.ok(userService.findUserById(id));
     }
     @GetMapping("/users")
     public R<List<User>> getUsers(@RequestParam("ids") List<Long> ids){
@@ -46,10 +40,8 @@ public class UserController {
         return R.ok();
     }
     @PutMapping("/user")
-    public R<Boolean> updateUserById(@RequestBody UserDTO userDTO){
-        User user = new User();
-        BeanUtils.copyProperties(userDTO,user);
-        userService.updateById(user);
+    public R<Boolean> updateUser(@RequestBody UserDTO userDTO){
+        userService.updateUser(userDTO);
         return R.ok();
     }
     @PutMapping("/user/{id}/deduction/{age}")
