@@ -23,7 +23,7 @@ public interface UserService extends IService<User> {
 
     PageDTO<UserVO> findUsersPage(Long pageNum, Long pageSize, String name, UserStatus status, UserRole roleId);
     PageDTO<UserVO> findUsersPage(UserQuery userQuery);
-    UserLoginVO login(String userName, String password);
+    R<UserLoginVO> login(String userName, String password);
 
     void addUser(UserDTO userDTO);
 

@@ -1,6 +1,7 @@
 package com.lmj.estate.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,16 +96,21 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         });
     }
     @Override
-    public UserLoginVO login(String userName, String password) {
+    public R<UserLoginVO> login(String userName, String password) {
         //0.验证数据
-
+        if(StrUtil.isEmptyIfStr(userName)){
+            return R.no("用户名不能为空");
+        }
+        if(StrUtil.isEmptyIfStr(password)){
+            return R.no("密码不能为空");
+        }
         //1.根据电话和姓名查用户
         LambdaQueryWrapper<User> userLQW = new LambdaQueryWrapper();
-        userLQW.eq(User::getName,userName);
-        userLQW.eq(User::getPassword,password);
+        userLQW.eq(userName!=null,User::getName,userName);
+        userLQW.eq(password!=null,User::getPassword,password);
         User user = this.baseMapper.selectOne(userLQW);
         if(Objects.isNull(user)){
-            throw new RuntimeException("用户不存在！");
+            return R.no("用户不存在");
         }
         log.debug("用户:"+userName+" 登录信息认证成功");
         //2.用户登录成功，生成JWT令牌并返回给客户端
@@ -111,12 +118,13 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         log.debug("JWT Token: " + jwtToken);
         //3.结果封装
         UserLoginVO vo = BeanUtil.copyProperties(user, UserLoginVO.class);
+        vo.setPassword(vo.getPassword().substring(0,vo.getPassword().length()-4)+"**");
         vo.setToken(jwtToken);
         LambdaQueryWrapper<Menu> menuLQW = new LambdaQueryWrapper();
         menuLQW.like(Menu::getMenuRight, user.getRoleId().getValue());
         List<Menu> menus = menuDao.selectList(menuLQW);
         vo.setMenus(menus);
-        return vo;
+        return R.ok(vo);
     }
 
     @Override
@@ -197,7 +205,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         }catch (IllegalStateException e){
             return R.no("用户信息类型转换出错");
         }catch (Exception e){
-            return R.ok("插入用户信息出错");
+            return R.no("插入用户信息出错");
         }
         return R.ok();
     }
@@ -234,7 +242,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             }
             // 4.设置响应头
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            response.setHeader("Content-Disposition", "attachment; filename=users.xlsx");
+            response.setHeader("Content-Disposition",  "attachment; filename=users.xlsx");
 
             // 5.将工作簿写入响应流
             OutputStream outputStream = response.getOutputStream();

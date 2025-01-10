@@ -14,7 +14,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public R<UserLoginVO> login(@RequestBody UserDTO userDTO){
-        return R.ok(userService.login(userDTO.getName(), userDTO.getPassword()));
+        return userService.login(userDTO.getName(), userDTO.getPassword());
     }
 
     @GetMapping(value = "/loginOut")
