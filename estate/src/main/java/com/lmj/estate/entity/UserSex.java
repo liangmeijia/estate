@@ -14,4 +14,14 @@ public enum UserSex {
     private Integer value;
     @JsonValue
     private String desc;
+
+    //根据desc获取枚举类型
+    public static UserSex fromDesc(String desc) {
+        for (UserSex type : UserSex.values()) {
+            if (type.getDesc().equals(desc)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("No enum constant with desc: " + desc);
+    }
 }

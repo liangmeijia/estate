@@ -14,4 +14,13 @@ public enum UserRole {
     private Integer value;
     @JsonValue
     private String desc;
+
+    public static UserRole fromDesc(String desc) {
+        for (UserRole type : UserRole.values()) {
+            if (type.getDesc().equals(desc)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("No enum constant with desc: " + desc);
+    }
 }

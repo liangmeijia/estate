@@ -41,4 +41,7 @@ public class PageQuery {
     public <E>Page<E> toMpPageDefaultByAge(){
         return toMpPage(new OrderItem("age",true));
     }
+    public <E>Page<E> toMpPageDefaultByCreateTime(){
+        return toMpPage(new OrderItem("create_time",true));
+    }
 }

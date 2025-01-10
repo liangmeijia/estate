@@ -14,4 +14,13 @@ public enum UserStatus {
     private Integer value;
     @JsonValue
     private String desc;
+
+    public static UserStatus fromDesc(String desc) {
+        for (UserStatus type : UserStatus.values()) {
+            if (type.getDesc().equals(desc)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("No enum constant with desc: " + desc);
+    }
 }

@@ -83,4 +83,9 @@ public class R<T> {
     public static <T> R<T> no(T data) {
         return new R<>(false,CODE_ERR_BUSINESS,"失败",data);
     }
+
+    /**
+     *
+     */
+
 }

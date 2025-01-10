@@ -19,7 +19,12 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
-## 日志配置
+  ##上传文件的最大限制
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+##日志配置
 logging:
   level:
     com.lmj.estate: debug
