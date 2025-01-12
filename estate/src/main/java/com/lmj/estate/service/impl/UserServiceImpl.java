@@ -5,8 +5,8 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lmj.estate.dao.MenuDao;
-import com.lmj.estate.dao.UserDao;
+import com.lmj.estate.dao.MenuMapper;
+import com.lmj.estate.dao.UserMapper;
 import com.lmj.estate.domain.DTO.PageDTO;
 import com.lmj.estate.domain.DTO.UserDTO;
 import com.lmj.estate.domain.VO.UserLoginVO;
@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,6 @@ import java.util.Objects;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Iterator;
 
@@ -42,8 +40,8 @@ import static com.lmj.estate.domain.constant.ManageConst.DEFAULT_EXPIRED_SECONDS
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserService {
-    private final MenuDao menuDao;
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+    private final MenuMapper menuDao;
     private final String[] headers = {"姓名","密码","年龄","性别","电话","邮件","余额","角色","状态"};
     @Override
     public void deductionAge(long id, int age) {
