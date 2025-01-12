@@ -1,8 +1,9 @@
 package com.lmj.estate.entity;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
@@ -30,7 +31,7 @@ public class BillRecords implements Serializable {
     /**
      * 缴费日期
      */
-    private Date date;
+    private LocalDateTime date;
 
     /**
      * 缴费状态（1-缴费成功；2-缴费失败；3-缴费中）
@@ -40,17 +41,18 @@ public class BillRecords implements Serializable {
     /**
      * 逻辑删除
      */
+    @TableLogic
     private Integer deleteFlag;
 
     /**
      * 创建时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     private static final long serialVersionUID = 1L;
 }

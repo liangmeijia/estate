@@ -21,6 +21,7 @@
         <plugin type="com.lmj.estate.plugin.MyBatisPlusMapperPlugin"/>
         <!-- 为生成mapper.xml时,移除默认方法 -->
         <plugin type="com.lmj.estate.plugin.RemoveDefaultXmlMethodsPlugin"/>
+
         <!--可以自定义生成entity的代码注释-->
         <commentGenerator type="com.lmj.estate.utils.CommentGenerator">
             <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
@@ -36,6 +37,11 @@
             <!--解决mysql驱动升级到8.0后不生成指定数据库代码的问题-->
             <property name="nullCatalogMeansCurrent" value="true" />
         </jdbcConnection>
+        <!-- 自定义 Java 类型解析器 -->
+        <javaTypeResolver type="org.mybatis.generator.internal.types.JavaTypeResolverDefaultImpl">
+            <!-- 启用 Java 8 时间类型 -->
+            <property name="useJSR310Types" value="true"/>
+        </javaTypeResolver>
 
         <!--指定生成实体类的路径-->
         <javaModelGenerator targetPackage="com.lmj.estate.entity" targetProject="estate\src\main\java">
@@ -53,6 +59,7 @@
         </javaClientGenerator>
 
         <!-- 表明生成的实体类对应的数据库表，生成全部表tableName设为% -->
+        <table tableName="bill" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
         <table tableName="balance_records" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
         <table tableName="bill_records" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
         <table tableName="repairs" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
@@ -61,4 +68,5 @@
         <table tableName="house" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
         <table tableName="complaints" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
     </context>
+
 </generatorConfiguration>

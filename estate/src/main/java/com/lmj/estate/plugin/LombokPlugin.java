@@ -4,10 +4,12 @@ import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
-
+import org.mybatis.generator.api.dom.java.Field;
 import java.util.List;
+
+
 /**
- * description 用于修改自动生成的 entity 实体类，让其添加@Data注解，并删除get/set方法
+ * description 用于修改自动生成的 entity 实体类，让其添加@Data注解;删除get/set方法;并添加@TableLogic注解
  *
  * @author lmj
  * @version 1.0
@@ -30,6 +32,15 @@ public class LombokPlugin extends PluginAdapter {
         // 移除生成的 getter 和 setter 方法
         topLevelClass.getMethods().clear();
 
+        // 遍历所有字段，找到逻辑删除字段并添加 @TableLogic 注解
+        for (Field field : topLevelClass.getFields()) {
+            if ("deleteFlag".equalsIgnoreCase(field.getName())) {
+                // 在 delete_flag 字段上添加 @TableLogic 注解
+                field.addAnnotation("@TableLogic");
+                // 添加 @TableLogic 注解的导入
+                topLevelClass.addImportedType(new FullyQualifiedJavaType("com.baomidou.mybatisplus.annotation.TableLogic"));
+            }
+        }
         return true;
     }
 }
