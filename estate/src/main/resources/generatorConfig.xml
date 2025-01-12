@@ -11,11 +11,13 @@
         <property name="endingDelimiter" value="`"/>
         <property name="javaFileEncoding" value="UTF-8"/>
 
-        <!-- 为模型生成序列化方法-->
+        <!-- 为实体类生成序列化方法-->
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
         <!--生成mapper.xml时覆盖原文件-->
         <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin" />
-        <!--为模型生成Lombok注解 -->
+        <!--为实体类生成主键注解 -->
+        <plugin type="com.lmj.estate.plugin.TableIdPlugin"/>
+        <!--为实体类生成Lombok注解 -->
         <plugin type="com.lmj.estate.plugin.LombokPlugin"/>
         <!--为生成mapper接口时 继承BaseMapper<T>接口，并移除默认方法-->
         <plugin type="com.lmj.estate.plugin.MyBatisPlusMapperPlugin"/>

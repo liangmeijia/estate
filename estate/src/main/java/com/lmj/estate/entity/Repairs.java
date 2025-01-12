@@ -1,22 +1,29 @@
 package com.lmj.estate.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import com.lmj.estate.domain.enums.RepairStatus;
 import lombok.Data;
 
 @Data
+@TableName(value = "repairs",autoResultMap = true)
 public class Repairs implements Serializable {
     /**
      * 主键
      */
-    private Integer id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
 
     /**
      * 申请人id
      */
-    private Integer applicantId;
+    private Long applicantId;
 
     /**
      * 申请人姓名
@@ -49,9 +56,9 @@ public class Repairs implements Serializable {
     private String number;
 
     /**
-     * 维修状态（1-待维修；2-维修中；3-维修完成）
+     * 维修状态（0-待维修；1-维修中；2-维修完成）
      */
-    private Byte status;
+    private RepairStatus status;
 
     /**
      * 维修开始日期

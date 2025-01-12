@@ -1,7 +1,9 @@
 package com.lmj.estate.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.lmj.estate.domain.enums.UserRole;
+import com.lmj.estate.domain.enums.UserSex;
+import com.lmj.estate.domain.enums.UserStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;

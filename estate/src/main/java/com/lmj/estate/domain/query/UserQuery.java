@@ -1,8 +1,7 @@
 package com.lmj.estate.domain.query;
 
-import com.lmj.estate.entity.UserRole;
-import com.lmj.estate.entity.UserStatus;
-import lombok.Builder;
+import com.lmj.estate.domain.enums.UserRole;
+import com.lmj.estate.domain.enums.UserStatus;
 import lombok.Data;
 
 @Data

@@ -4,17 +4,16 @@ import com.lmj.estate.domain.DTO.PageDTO;
 import com.lmj.estate.domain.DTO.UserDTO;
 import com.lmj.estate.domain.VO.UserVO;
 import com.lmj.estate.domain.common.R;
+import com.lmj.estate.domain.enums.BalancePaymentMethod;
 import com.lmj.estate.domain.query.UserQuery;
 import com.lmj.estate.entity.User;
-import com.lmj.estate.entity.UserRole;
-import com.lmj.estate.entity.UserStatus;
 import com.lmj.estate.service.UserService;
+import com.lmj.estate.utils.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -22,7 +21,6 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-
     /**
      * 新增用户
      * @param userDTO 用户信息
@@ -88,6 +86,16 @@ public class UserController {
         return R.ok();
     }
 
+    /**
+     * 用户余额充值
+     * @param id 用户id
+     * @param balance 充值金额
+     * @return
+     */
+    @PutMapping("/balance/payment")
+    public R<String> billPayment(@RequestParam long id, @RequestParam BalancePaymentMethod balancePaymentMethod, @RequestParam Double balance){
+        return userService.increaseBalance(id,balancePaymentMethod,balance);
+    }
 //    @GetMapping("/user/page")
 //    public R<PageDTO<UserVO>> getUsersPage(@RequestParam Long pageNum,
 //                                           @RequestParam Long pageSize,

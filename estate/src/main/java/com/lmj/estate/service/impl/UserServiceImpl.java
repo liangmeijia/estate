@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lmj.estate.dao.BalanceRecordsMapper;
 import com.lmj.estate.dao.MenuMapper;
 import com.lmj.estate.dao.UserMapper;
 import com.lmj.estate.domain.DTO.PageDTO;
@@ -12,6 +13,7 @@ import com.lmj.estate.domain.DTO.UserDTO;
 import com.lmj.estate.domain.VO.UserLoginVO;
 import com.lmj.estate.domain.VO.UserVO;
 import com.lmj.estate.domain.common.R;
+import com.lmj.estate.domain.enums.*;
 import com.lmj.estate.domain.query.UserQuery;
 import com.lmj.estate.entity.*;
 import com.lmj.estate.service.UserService;
@@ -41,7 +43,8 @@ import static com.lmj.estate.domain.constant.ManageConst.DEFAULT_EXPIRED_SECONDS
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
-    private final MenuMapper menuDao;
+    private final MenuMapper menuMapper;
+    private final BalanceRecordsMapper balanceRecordsMapper;
     private final String[] headers = {"姓名","密码","年龄","性别","电话","邮件","余额","角色","状态"};
     @Override
     public void deductionAge(long id, int age) {
@@ -57,9 +60,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //3.减年龄
         baseMapper.deductionAge(id,age);
     }
-
     @Override
-    public PageDTO<UserVO> findUsersPage(Long pageNum,Long pageSize, String name,UserStatus status, UserRole roleId) {
+    public R<String> increaseBalance(long id, BalancePaymentMethod balancePaymentMethod,Double balance) {
+        if(balance<=0.0){
+            return R.no("请输入正确的充值金额");
+        }
+        //生成充值记录
+        BalanceRecords balanceRecords = new BalanceRecords();
+        balanceRecords.setAmount(balance);
+        balanceRecords.setUserId(id);
+        LocalDateTime now = LocalDateTime.now();
+        balanceRecords.setDate(now);
+        balanceRecords.setMethod(balancePaymentMethod);
+        balanceRecords.setCreateTime(now);
+        //余额充值
+        try {
+            baseMapper.increaseBalance(id,balance);
+            //添加成功充值的记录
+            balanceRecords.setStatus(BalancePaymentStatus.PAYMENT_SUCCESS);
+            balanceRecordsMapper.insert(balanceRecords);
+            return R.ok("充值成功");
+        }catch (Exception e){
+            //添加失败充值的记录
+            balanceRecords.setStatus(BalancePaymentStatus.PAYMENT_FAILED);
+            balanceRecordsMapper.insert(balanceRecords);
+            return R.ok("充值失败");
+        }
+    }
+    @Override
+    public PageDTO<UserVO> findUsersPage(Long pageNum, Long pageSize, String name, UserStatus status, UserRole roleId) {
         //1.构建分页条件
         Page<User> page = Page.of(pageNum, pageSize);
         //2.构建查询条件
@@ -120,7 +149,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         vo.setToken(jwtToken);
         LambdaQueryWrapper<Menu> menuLQW = new LambdaQueryWrapper();
         menuLQW.like(Menu::getMenuRight, user.getRoleId().getValue());
-        List<Menu> menus = menuDao.selectList(menuLQW);
+        List<Menu> menus = menuMapper.selectList(menuLQW);
         vo.setMenus(menus);
         return R.ok(vo);
     }

@@ -1,9 +1,9 @@
 package com.lmj.estate.domain.VO;
 
 import com.lmj.estate.entity.Menu;
-import com.lmj.estate.entity.UserRole;
-import com.lmj.estate.entity.UserSex;
-import com.lmj.estate.entity.UserStatus;
+import com.lmj.estate.domain.enums.UserRole;
+import com.lmj.estate.domain.enums.UserSex;
+import com.lmj.estate.domain.enums.UserStatus;
 import lombok.Data;
 
 import java.util.List;

@@ -1,42 +1,29 @@
-package com.lmj.estate.entity;
+package com.lmj.estate.domain.VO;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lmj.estate.domain.enums.BillPaymentStatus;
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+/**
+ * description 个人账单
+ *
+ * @author lmj
+ * @version 1.0
+ * @date 2025/01/12 18:56:19
+ */
 @Data
-@TableName(value = "bill",autoResultMap = true)
-public class Bill implements Serializable {
-    /**
-     * 主键
-     */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+public class BillVO {
 
-    /**
-     * 地址
-     */
+    private Integer id;
     private String address;
-
-    /**
-     * 栋
-     */
     private String building;
-
-    /**
-     * 单元
-     */
     private String unit;
-
-    /**
-     * 门牌号
-     */
     private String number;
 
     /**
@@ -58,22 +45,9 @@ public class Bill implements Serializable {
      * 缴费状态（0-待缴费；1-缴费成功；2-缴费失败）
      */
     private BillPaymentStatus status;
-
-    /**
-     * 逻辑删除
-     */
-    @TableLogic
-    private Integer deleteFlag;
-
     /**
      * 创建时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
-
-    /**
-     * 更新时间
-     */
-    private LocalDateTime updateTime;
-
-    private static final long serialVersionUID = 1L;
 }

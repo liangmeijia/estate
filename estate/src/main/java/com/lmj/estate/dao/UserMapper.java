@@ -10,7 +10,8 @@ import java.util.List;
 public interface UserMapper extends BaseMapper<User> {
     @Update("update user set age = age - #{age} where id = #{id}")
     void deductionAge(@Param("id") long id ,@Param("age") int age);
-
+    @Update("update user set balance = balance + #{balance} where id = #{id}")
+    void increaseBalance(@Param("id") long id ,@Param("balance") Double balance);
     int batchInsert(@Param("users") List<User> users);
 
 }

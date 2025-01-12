@@ -1,16 +1,21 @@
 package com.lmj.estate.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
+@TableName(value = "notice",autoResultMap = true)
 public class Notice implements Serializable {
     /**
      * 主键
      */
-    private Integer id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
 
     /**
      * 公告标题

@@ -1,17 +1,21 @@
 package com.lmj.estate.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
+@TableName(value = "house",autoResultMap = true)
 public class House implements Serializable {
     /**
      * 主键
      */
-    private Integer id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
 
     /**
      * 地址
@@ -36,17 +40,17 @@ public class House implements Serializable {
     /**
      * 面积
      */
-    private Integer area;
+    private Double area;
 
     /**
      * 房价
      */
-    private BigDecimal price;
+    private Double price;
 
     /**
      * 户主id
      */
-    private Integer userId;
+    private Long userId;
 
     /**
      * 逻辑删除

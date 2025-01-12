@@ -1,22 +1,28 @@
 package com.lmj.estate.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import com.lmj.estate.domain.enums.BillPaymentStatus;
 import lombok.Data;
 
 @Data
+@TableName(value = "bill_records",autoResultMap = true)
 public class BillRecords implements Serializable {
     /**
      * 主键
      */
-    private Integer id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
 
     /**
      * 用户id
      */
-    private Integer userId;
+    private Long userId;
 
     /**
      * 费用名称
@@ -26,7 +32,7 @@ public class BillRecords implements Serializable {
     /**
      * 缴费金额
      */
-    private BigDecimal amount;
+    private Double amount;
 
     /**
      * 缴费日期
@@ -34,9 +40,9 @@ public class BillRecords implements Serializable {
     private LocalDateTime date;
 
     /**
-     * 缴费状态（1-缴费成功；2-缴费失败；3-缴费中）
+     * 缴费状态（0-代缴费；1-缴费成功；2-缴费失败）
      */
-    private Byte status;
+    private BillPaymentStatus status;
 
     /**
      * 逻辑删除

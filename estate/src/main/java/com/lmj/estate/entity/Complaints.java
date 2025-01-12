@@ -1,21 +1,28 @@
 package com.lmj.estate.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import com.lmj.estate.domain.enums.ComplaintsStatus;
 import lombok.Data;
 
 @Data
+@TableName(value = "complaints",autoResultMap = true)
 public class Complaints implements Serializable {
     /**
      * 主键
      */
-    private Integer id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
 
     /**
      * 申请人id
      */
-    private Integer applicantId;
+    private Long applicantId;
 
     /**
      * 申请人姓名
@@ -28,9 +35,9 @@ public class Complaints implements Serializable {
     private String applicantPhone;
 
     /**
-     * 投诉状态（1-待处理；2-已处理）
+     * 投诉状态（0-待处理；1-已处理）
      */
-    private Byte status;
+    private ComplaintsStatus status;
 
     /**
      * 逻辑删除

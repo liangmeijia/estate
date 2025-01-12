@@ -1,109 +1,26 @@
-22:38:26:635  INFO 7716 --- [main] com.lmj.estate.EstateApplication         : Starting EstateApplication using Java 1.8.0_351 on xzz with PID 7716 (D:\code\java\estate-management\estate\target\classes started by LENOVO in D:\code\java\estate-management)
-22:38:26:640 DEBUG 7716 --- [main] com.lmj.estate.EstateApplication         : Running with Spring Boot v2.6.13, Spring v5.3.23
-22:38:26:640  INFO 7716 --- [main] com.lmj.estate.EstateApplication         : No active profile set, falling back to 1 default profile: "default"
-22:38:27:685  INFO 7716 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8090 (http)
-22:38:27:692  INFO 7716 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-22:38:27:692  INFO 7716 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.68]
-22:38:27:845  INFO 7716 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-22:38:27:846  INFO 7716 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1162 ms
-22:38:28:808  INFO 7716 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8090 (http) with context path ''
-22:38:28:816  INFO 7716 --- [main] com.lmj.estate.EstateApplication         : Started EstateApplication in 2.534 seconds (JVM running for 3.412)
-22:39:49:141  INFO 7716 --- [http-nio-8090-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-22:39:49:142  INFO 7716 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-22:39:49:148  INFO 7716 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
-22:39:49:425  INFO 7716 --- [http-nio-8090-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-22:39:49:574  INFO 7716 --- [http-nio-8090-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-22:39:49:580 DEBUG 7716 --- [http-nio-8090-exec-2] com.lmj.estate.dao.UserMapper.selectList    : ==>  Preparing: SELECT id,name,password,age,sex,phone,email,balance,role_id,status,delete_flag,create_time,update_time FROM user WHERE delete_flag=0 AND (name = ? AND password = ?)
-22:39:49:605 DEBUG 7716 --- [http-nio-8090-exec-2] com.lmj.estate.dao.UserMapper.selectList    : ==> Parameters: 物业总部(String), 123456(String)
-22:39:49:626 DEBUG 7716 --- [http-nio-8090-exec-2] com.lmj.estate.dao.UserMapper.selectList    : <==      Total: 1
-22:39:49:642 DEBUG 7716 --- [http-nio-8090-exec-2] c.l.estate.service.impl.UserServiceImpl  : 用户:物业总部 登录信息认证成功
-22:39:49:643 DEBUG 7716 --- [http-nio-8090-exec-2] com.lmj.estate.utils.JwtUtils            : 密钥：EX8VUBRdR0ejGE+wexuYBfoUus7xKlW4dw3i8Q/ITd0=
-22:39:50:004 DEBUG 7716 --- [http-nio-8090-exec-2] c.l.estate.service.impl.UserServiceImpl  : JWT Token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM2NjA2Mzg5LCJleHAiOjE3MzY2MDY5ODl9.pDyMuPoG9E1zuct4PzxA54mVUvqSJqrmU9BlBpXKJJk
-22:39:50:053 DEBUG 7716 --- [http-nio-8090-exec-2] com.lmj.estate.dao.MenuMapper.selectList    : ==>  Preparing: SELECT id,menu_code,menu_name,menu_level,menu_parent_code,menu_click,menu_right,menu_component,menu_icon,delete_flag,create_time,update_time FROM menu WHERE delete_flag=0 AND (menu_right LIKE ?)
-22:39:50:053 DEBUG 7716 --- [http-nio-8090-exec-2] com.lmj.estate.dao.MenuMapper.selectList    : ==> Parameters: %0%(String)
-22:39:50:057 DEBUG 7716 --- [http-nio-8090-exec-2] com.lmj.estate.dao.MenuMapper.selectList    : <==      Total: 2
-22:39:59:442 DEBUG 7716 --- [http-nio-8090-exec-4] c.l.e.dao.UserDao.selectPage_mpCount     : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ?)
-22:39:59:443 DEBUG 7716 --- [http-nio-8090-exec-4] c.l.e.dao.UserDao.selectPage_mpCount     : ==> Parameters: %%(String)
-22:39:59:444 DEBUG 7716 --- [http-nio-8090-exec-4] c.l.e.dao.UserDao.selectPage_mpCount     : <==      Total: 1
-22:39:59:451 DEBUG 7716 --- [http-nio-8090-exec-4] com.lmj.estate.dao.UserMapper.selectPage    : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ?) ORDER BY create_time ASC LIMIT ?
-22:39:59:451 DEBUG 7716 --- [http-nio-8090-exec-4] com.lmj.estate.dao.UserMapper.selectPage    : ==> Parameters: %%(String), 10(Long)
-22:39:59:453 DEBUG 7716 --- [http-nio-8090-exec-4] com.lmj.estate.dao.UserMapper.selectPage    : <==      Total: 2
-22:40:15:655 DEBUG 7716 --- [http-nio-8090-exec-5] c.l.e.dao.UserDao.selectPage_mpCount     : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ?)
-22:40:15:656 DEBUG 7716 --- [http-nio-8090-exec-5] c.l.e.dao.UserDao.selectPage_mpCount     : ==> Parameters: %%(String)
-22:40:15:657 DEBUG 7716 --- [http-nio-8090-exec-5] c.l.e.dao.UserDao.selectPage_mpCount     : <==      Total: 1
-22:40:15:661 DEBUG 7716 --- [http-nio-8090-exec-5] com.lmj.estate.dao.UserMapper.selectPage    : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ?) ORDER BY create_time ASC LIMIT ?
-22:40:15:661 DEBUG 7716 --- [http-nio-8090-exec-5] com.lmj.estate.dao.UserMapper.selectPage    : ==> Parameters: %%(String), 10(Long)
-22:40:15:664 DEBUG 7716 --- [http-nio-8090-exec-5] com.lmj.estate.dao.UserMapper.selectPage    : <==      Total: 2
-22:43:31:933 DEBUG 7716 --- [http-nio-8090-exec-9] com.lmj.estate.dao.UserMapper.batchInsert   : ==>  Preparing: INSERT INTO user ( name,password,age,sex,phone,email,balance,role_id,status,create_time ) VALUES (?, ?,?,?,?,?,?,?,?,?) , (?, ?,?,?,?,?,?,?,?,?) , (?, ?,?,?,?,?,?,?,?,?)
-22:43:31:938 DEBUG 7716 --- [http-nio-8090-exec-9] com.lmj.estate.dao.UserMapper.batchInsert   : ==> Parameters: 业主1(String), 123456(String), 23(Integer), 1(Integer), 15188764435(String), 13188764435@163.net(String), 0.0(Double), 1(Integer), 0(Integer), 2025-01-11T22:43:31.929(LocalDateTime), 业主2(String), 123457(String), 43(Integer), 1(Integer), 13798762343(String), 13798762343@yeah.net(String), 100.0(Double), 1(Integer), 0(Integer), 2025-01-11T22:43:31.930(LocalDateTime), 业主3(String), 123458(String), 34(Integer), 0(Integer), 18188762767(String), 18188762767@yeah.net(String), 0.0(Double), 1(Integer), 0(Integer), 2025-01-11T22:43:31.931(LocalDateTime)
-22:43:31:942 DEBUG 7716 --- [http-nio-8090-exec-9] com.lmj.estate.dao.UserMapper.batchInsert   : <==    Updates: 3
-22:43:35:532 DEBUG 7716 --- [http-nio-8090-exec-10] c.l.e.dao.UserDao.selectPage_mpCount     : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ?)
-22:43:35:534 DEBUG 7716 --- [http-nio-8090-exec-10] c.l.e.dao.UserDao.selectPage_mpCount     : ==> Parameters: %%(String)
-22:43:35:537 DEBUG 7716 --- [http-nio-8090-exec-10] c.l.e.dao.UserDao.selectPage_mpCount     : <==      Total: 1
-22:43:35:544 DEBUG 7716 --- [http-nio-8090-exec-10] com.lmj.estate.dao.UserMapper.selectPage    : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ?) ORDER BY create_time ASC LIMIT ?
-22:43:35:545 DEBUG 7716 --- [http-nio-8090-exec-10] com.lmj.estate.dao.UserMapper.selectPage    : ==> Parameters: %%(String), 10(Long)
-22:43:35:554 DEBUG 7716 --- [http-nio-8090-exec-10] com.lmj.estate.dao.UserMapper.selectPage    : <==      Total: 5
-22:43:54:449 DEBUG 7716 --- [http-nio-8090-exec-8] c.l.e.dao.UserDao.selectPage_mpCount     : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ? AND role_id = ?)
-22:43:54:451 DEBUG 7716 --- [http-nio-8090-exec-8] c.l.e.dao.UserDao.selectPage_mpCount     : ==> Parameters: %%(String), 0(Integer)
-22:43:54:454 DEBUG 7716 --- [http-nio-8090-exec-8] c.l.e.dao.UserDao.selectPage_mpCount     : <==      Total: 1
-22:43:54:462 DEBUG 7716 --- [http-nio-8090-exec-8] com.lmj.estate.dao.UserMapper.selectPage    : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ? AND role_id = ?) ORDER BY create_time ASC LIMIT ?
-22:43:54:463 DEBUG 7716 --- [http-nio-8090-exec-8] com.lmj.estate.dao.UserMapper.selectPage    : ==> Parameters: %%(String), 0(Integer), 10(Long)
-22:43:54:467 DEBUG 7716 --- [http-nio-8090-exec-8] com.lmj.estate.dao.UserMapper.selectPage    : <==      Total: 1
-22:43:59:421 DEBUG 7716 --- [http-nio-8090-exec-1] c.l.e.dao.UserDao.selectPage_mpCount     : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ?)
-22:43:59:423 DEBUG 7716 --- [http-nio-8090-exec-1] c.l.e.dao.UserDao.selectPage_mpCount     : ==> Parameters: %%(String)
-22:43:59:423 DEBUG 7716 --- [http-nio-8090-exec-1] c.l.e.dao.UserDao.selectPage_mpCount     : <==      Total: 1
-22:43:59:428 DEBUG 7716 --- [http-nio-8090-exec-1] com.lmj.estate.dao.UserMapper.selectPage    : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ?) ORDER BY create_time ASC LIMIT ?
-22:43:59:429 DEBUG 7716 --- [http-nio-8090-exec-1] com.lmj.estate.dao.UserMapper.selectPage    : ==> Parameters: %%(String), 10(Long)
-22:43:59:436 DEBUG 7716 --- [http-nio-8090-exec-1] com.lmj.estate.dao.UserMapper.selectPage    : <==      Total: 5
-22:44:06:736 DEBUG 7716 --- [http-nio-8090-exec-3] c.l.e.dao.UserDao.selectPage_mpCount     : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ?)
-22:44:06:737 DEBUG 7716 --- [http-nio-8090-exec-3] c.l.e.dao.UserDao.selectPage_mpCount     : ==> Parameters: %%(String)
-22:44:06:740 DEBUG 7716 --- [http-nio-8090-exec-3] c.l.e.dao.UserDao.selectPage_mpCount     : <==      Total: 1
-22:44:06:745 DEBUG 7716 --- [http-nio-8090-exec-3] com.lmj.estate.dao.UserMapper.selectPage    : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ?) ORDER BY create_time ASC LIMIT ?
-22:44:06:747 DEBUG 7716 --- [http-nio-8090-exec-3] com.lmj.estate.dao.UserMapper.selectPage    : ==> Parameters: %%(String), 10(Long)
-22:44:06:753 DEBUG 7716 --- [http-nio-8090-exec-3] com.lmj.estate.dao.UserMapper.selectPage    : <==      Total: 5
-22:45:42:793  INFO 7716 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-22:45:42:798  INFO 7716 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-16:26:02:708  INFO 14696 --- [main] com.lmj.estate.EstateApplication         : Starting EstateApplication using Java 1.8.0_351 on xzz with PID 14696 (D:\code\java\estate-management\estate\target\classes started by LENOVO in D:\code\java\estate-management)
-16:26:02:709 DEBUG 14696 --- [main] com.lmj.estate.EstateApplication         : Running with Spring Boot v2.6.13, Spring v5.3.23
-16:26:02:710  INFO 14696 --- [main] com.lmj.estate.EstateApplication         : No active profile set, falling back to 1 default profile: "default"
-16:26:03:509  INFO 14696 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8090 (http)
-16:26:03:516  INFO 14696 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-16:26:03:516  INFO 14696 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.68]
-16:26:03:628  INFO 14696 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-16:26:03:628  INFO 14696 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 886 ms
-16:26:04:590  INFO 14696 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8090 (http) with context path ''
-16:26:04:597  INFO 14696 --- [main] com.lmj.estate.EstateApplication         : Started EstateApplication in 2.22 seconds (JVM running for 2.835)
-16:28:03:098  INFO 14696 --- [http-nio-8090-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-16:28:03:098  INFO 14696 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-16:28:03:099  INFO 14696 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-16:28:03:256  INFO 14696 --- [http-nio-8090-exec-3] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-16:28:03:347  INFO 14696 --- [http-nio-8090-exec-3] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-16:28:03:351 DEBUG 14696 --- [http-nio-8090-exec-3] c.lmj.estate.dao.UserMapper.selectList   : ==>  Preparing: SELECT id,name,password,age,sex,phone,email,balance,role_id,status,delete_flag,create_time,update_time FROM user WHERE delete_flag=0 AND (name = ? AND password = ?)
-16:28:03:369 DEBUG 14696 --- [http-nio-8090-exec-3] c.lmj.estate.dao.UserMapper.selectList   : ==> Parameters: 物业总部(String), 123456(String)
-16:28:03:394 DEBUG 14696 --- [http-nio-8090-exec-3] c.lmj.estate.dao.UserMapper.selectList   : <==      Total: 1
-16:28:03:398 DEBUG 14696 --- [http-nio-8090-exec-3] c.l.estate.service.impl.UserServiceImpl  : 用户:物业总部 登录信息认证成功
-16:28:03:399 DEBUG 14696 --- [http-nio-8090-exec-3] com.lmj.estate.utils.JwtUtils            : 密钥：iGs1Gfu7nfwyZj2+hZBBhD14BgoJ/huKyvMg8hH7OUA=
-16:28:03:681 DEBUG 14696 --- [http-nio-8090-exec-3] c.l.estate.service.impl.UserServiceImpl  : JWT Token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM2NjcwNDgzLCJleHAiOjE3MzY2NzEwODN9.sU07D5oktIlBpgTqEiZpxCjS70MEImNPvBS9bETexkY
-16:28:03:717 DEBUG 14696 --- [http-nio-8090-exec-3] c.lmj.estate.dao.MenuMapper.selectList   : ==>  Preparing: SELECT id,menu_code,menu_name,menu_level,menu_parent_code,menu_click,menu_right,menu_component,menu_icon,delete_flag,create_time,update_time FROM menu WHERE delete_flag=0 AND (menu_right LIKE ?)
-16:28:03:717 DEBUG 14696 --- [http-nio-8090-exec-3] c.lmj.estate.dao.MenuMapper.selectList   : ==> Parameters: %0%(String)
-16:28:03:720 DEBUG 14696 --- [http-nio-8090-exec-3] c.lmj.estate.dao.MenuMapper.selectList   : <==      Total: 2
-16:28:16:322 DEBUG 14696 --- [http-nio-8090-exec-2] c.l.e.dao.UserMapper.selectPage_mpCount  : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ?)
-16:28:16:323 DEBUG 14696 --- [http-nio-8090-exec-2] c.l.e.dao.UserMapper.selectPage_mpCount  : ==> Parameters: %%(String)
-16:28:16:324 DEBUG 14696 --- [http-nio-8090-exec-2] c.l.e.dao.UserMapper.selectPage_mpCount  : <==      Total: 1
-16:28:16:331 DEBUG 14696 --- [http-nio-8090-exec-2] c.lmj.estate.dao.UserMapper.selectPage   : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ?) ORDER BY create_time ASC LIMIT ?
-16:28:16:331 DEBUG 14696 --- [http-nio-8090-exec-2] c.lmj.estate.dao.UserMapper.selectPage   : ==> Parameters: %%(String), 10(Long)
-16:28:16:334 DEBUG 14696 --- [http-nio-8090-exec-2] c.lmj.estate.dao.UserMapper.selectPage   : <==      Total: 5
-16:28:21:354 DEBUG 14696 --- [http-nio-8090-exec-5] c.l.e.dao.UserMapper.selectPage_mpCount  : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ? AND role_id = ?)
-16:28:21:356 DEBUG 14696 --- [http-nio-8090-exec-5] c.l.e.dao.UserMapper.selectPage_mpCount  : ==> Parameters: %%(String), 0(Integer)
-16:28:21:357 DEBUG 14696 --- [http-nio-8090-exec-5] c.l.e.dao.UserMapper.selectPage_mpCount  : <==      Total: 1
-16:28:21:363 DEBUG 14696 --- [http-nio-8090-exec-5] c.lmj.estate.dao.UserMapper.selectPage   : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ? AND role_id = ?) ORDER BY create_time ASC LIMIT ?
-16:28:21:364 DEBUG 14696 --- [http-nio-8090-exec-5] c.lmj.estate.dao.UserMapper.selectPage   : ==> Parameters: %%(String), 0(Integer), 10(Long)
-16:28:21:367 DEBUG 14696 --- [http-nio-8090-exec-5] c.lmj.estate.dao.UserMapper.selectPage   : <==      Total: 1
-16:28:23:599 DEBUG 14696 --- [http-nio-8090-exec-4] c.l.e.dao.UserMapper.selectPage_mpCount  : ==>  Preparing: SELECT COUNT(*) AS total FROM user WHERE delete_flag = 0 AND (name LIKE ?)
-16:28:23:600 DEBUG 14696 --- [http-nio-8090-exec-4] c.l.e.dao.UserMapper.selectPage_mpCount  : ==> Parameters: %%(String)
-16:28:23:601 DEBUG 14696 --- [http-nio-8090-exec-4] c.l.e.dao.UserMapper.selectPage_mpCount  : <==      Total: 1
-16:28:23:604 DEBUG 14696 --- [http-nio-8090-exec-4] c.lmj.estate.dao.UserMapper.selectPage   : ==>  Preparing: SELECT id, name, password, age, sex, phone, email, balance, role_id, status, delete_flag, create_time, update_time FROM user WHERE delete_flag = 0 AND (name LIKE ?) ORDER BY create_time ASC LIMIT ?
-16:28:23:605 DEBUG 14696 --- [http-nio-8090-exec-4] c.lmj.estate.dao.UserMapper.selectPage   : ==> Parameters: %%(String), 10(Long)
-16:28:23:610 DEBUG 14696 --- [http-nio-8090-exec-4] c.lmj.estate.dao.UserMapper.selectPage   : <==      Total: 5
-16:28:44:816  INFO 14696 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-16:28:44:821  INFO 14696 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+00:24:43:929  INFO 27992 --- [main] com.lmj.estate.EstateApplication         : Starting EstateApplication using Java 1.8.0_351 on xzz with PID 27992 (D:\code\java\estate-management\estate\target\classes started by LENOVO in D:\code\java\estate-management)
+00:24:43:938 DEBUG 27992 --- [main] com.lmj.estate.EstateApplication         : Running with Spring Boot v2.6.13, Spring v5.3.23
+00:24:43:939  INFO 27992 --- [main] com.lmj.estate.EstateApplication         : No active profile set, falling back to 1 default profile: "default"
+00:24:44:723  INFO 27992 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8090 (http)
+00:24:44:729  INFO 27992 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+00:24:44:732  INFO 27992 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.68]
+00:24:44:839  INFO 27992 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+00:24:44:840  INFO 27992 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 862 ms
+00:24:46:008  INFO 27992 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8090 (http) with context path ''
+00:24:46:017  INFO 27992 --- [main] com.lmj.estate.EstateApplication         : Started EstateApplication in 2.437 seconds (JVM running for 3.103)
+00:25:13:641  INFO 27992 --- [http-nio-8090-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+00:25:13:641  INFO 27992 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+00:25:13:642  INFO 27992 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+00:25:13:806  INFO 27992 --- [http-nio-8090-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+00:25:13:933  INFO 27992 --- [http-nio-8090-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+00:25:13:938 DEBUG 27992 --- [http-nio-8090-exec-1] c.lmj.estate.dao.HouseMapper.selectList  : ==>  Preparing: SELECT id,address,building,unit,number,area,price,user_id,delete_flag,create_time,update_time FROM house WHERE delete_flag=0 AND (address = ? AND building = ? AND number = ?)
+00:25:13:957 DEBUG 27992 --- [http-nio-8090-exec-1] c.lmj.estate.dao.HouseMapper.selectList  : ==> Parameters: 四川省成都市芳华路28号(String), 9栋(String), 501(String)
+00:25:13:974 DEBUG 27992 --- [http-nio-8090-exec-1] c.lmj.estate.dao.HouseMapper.selectList  : <==      Total: 0
+00:25:46:529 DEBUG 27992 --- [http-nio-8090-exec-2] c.lmj.estate.dao.HouseMapper.selectList  : ==>  Preparing: SELECT id,address,building,unit,number,area,price,user_id,delete_flag,create_time,update_time FROM house WHERE delete_flag=0 AND (address = ? AND building = ? AND number = ?)
+00:25:46:530 DEBUG 27992 --- [http-nio-8090-exec-2] c.lmj.estate.dao.HouseMapper.selectList  : ==> Parameters: 四川省成都市芳华路28号(String), 8栋(String), 501(String)
+00:25:46:539 DEBUG 27992 --- [http-nio-8090-exec-2] c.lmj.estate.dao.HouseMapper.selectList  : <==      Total: 1
+00:25:46:681 DEBUG 27992 --- [http-nio-8090-exec-2] com.lmj.estate.dao.BillMapper.insert     : ==>  Preparing: INSERT INTO bill ( address, building, unit, number, amount_name, price, cost_details, status, create_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+00:25:46:688 DEBUG 27992 --- [http-nio-8090-exec-2] com.lmj.estate.dao.BillMapper.insert     : ==> Parameters: 四川省成都市芳华路28号(String), 8栋(String), 1单元(String), 501(String), 水费(String), 60.0(Double), 当月(String), 0(Integer), 2025-01-13T00:25:46.671(LocalDateTime)
+00:25:46:692 DEBUG 27992 --- [http-nio-8090-exec-2] com.lmj.estate.dao.BillMapper.insert     : <==    Updates: 1
+00:26:16:890  INFO 27992 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+00:26:16:896  INFO 27992 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
