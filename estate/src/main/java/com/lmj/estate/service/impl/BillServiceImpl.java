@@ -7,16 +7,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lmj.estate.dao.BillMapper;
 import com.lmj.estate.dao.HouseMapper;
-import com.lmj.estate.domain.DTO.BillDTO;
+import com.lmj.estate.domain.DTO.BilUpdateDTO;
+import com.lmj.estate.domain.DTO.BillAddDTO;
 import com.lmj.estate.domain.DTO.PageDTO;
 import com.lmj.estate.domain.VO.BillVO;
-import com.lmj.estate.domain.VO.UserVO;
 import com.lmj.estate.domain.common.R;
 import com.lmj.estate.domain.enums.BillPaymentStatus;
 import com.lmj.estate.domain.query.BillQuery;
 import com.lmj.estate.entity.Bill;
 import com.lmj.estate.entity.House;
-import com.lmj.estate.entity.User;
 import com.lmj.estate.service.BillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * description 账单服务类
@@ -42,13 +40,13 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
         // 0.初始化最终结果的 Page
         Page<Bill> finalPage = billQuery.toMpPageDefaultByCreateTime();
         List<Bill> combinedRecords = new ArrayList<>();
-        List<House> houses = new ArrayList<>();
+        List<House> houses = null;
         // 1.构建查询条件
         Long userId = billQuery.getId();
         String amountName = billQuery.getAmountName();
         BillPaymentStatus status = billQuery.getStatus();
         if(StrUtil.isEmptyIfStr(userId)){
-            // 2.查询表中的所有记录
+            // 2.查询房产表中的所有记录
             houses = houseMapper.selectList(null);
         }else {
             //2.查询用户名下的所有房产
@@ -59,7 +57,7 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
         if(StrUtil.isEmptyIfStr(houses)){
             return null;
         }
-        //3。获取每一个房产下的所有账单
+        //3。循环获取每一个房产下的所有账单
         for (House house:houses){
             LambdaQueryWrapper<Bill> LQW = new LambdaQueryWrapper<>();
             LQW.eq(house.getAddress()!=null,Bill::getAddress,house.getAddress())
@@ -71,17 +69,17 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
             // 累积当前结果到 combinedRecords
             combinedRecords.addAll(baseMapper.selectList(LQW));
         }
-        // 手动分页逻辑
+        // 4.手动分页逻辑
         Long current = finalPage.getCurrent();
         Long size = finalPage.getSize();
         Long start = (current - 1) * size;
         Long end = Math.min(start + size, combinedRecords.size());
         List<Bill> paginatedList = combinedRecords.subList(start.intValue(), end.intValue());
 
-        // 设置结果到最终 Page 对象
+        // 5.设置结果到最终 Page 对象
         finalPage.setRecords(paginatedList);
         finalPage.setTotal(combinedRecords.size());
-        //4.得到结果
+        //6.得到结果
         return PageDTO.of(finalPage, bill -> {
             BillVO billVO = BeanUtil.copyProperties(bill, BillVO.class);
             return billVO;
@@ -89,16 +87,9 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
     }
 
     @Override
-    public R<Void> addBill(BillDTO billDTO) {
+    public R<Void> addBill(BillAddDTO billDTO) {
         //0.判断添加账单的房产是否存在
-        LambdaQueryWrapper<House> LQW = new LambdaQueryWrapper<>();
-        String address = billDTO.getAddress();
-        String building = billDTO.getBuilding();
-        String number = billDTO.getNumber();
-        LQW.eq(address!=null,House::getAddress,address)
-                .eq(building!=null,House::getBuilding,building)
-                .eq(number!=null,House::getNumber,number);
-        House house = houseMapper.selectOne(LQW);
+        House house = isHouse(billDTO.getAddress(),billDTO.getBuilding(),billDTO.getUnit(),billDTO.getNumber());
         if(StrUtil.isEmptyIfStr(house)){
             return R.no("无此房产");
         }
@@ -116,7 +107,13 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
     }
 
     @Override
-    public R<Void> updateBill(BillDTO billDTO) {
+    public R<Void> updateBill(BilUpdateDTO billDTO) {
+        //0.判断修改账单的房产是否存在
+        House house = isHouse(billDTO.getAddress(),billDTO.getBuilding(),billDTO.getUnit(),billDTO.getNumber());
+        if(StrUtil.isEmptyIfStr(house)){
+            return R.no("无此房产");
+        }
+        //1.
         Bill bill = new Bill();
         BeanUtil.copyProperties(billDTO,bill);
         bill.setUpdateTime(LocalDateTime.now());
@@ -127,5 +124,22 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
             e.printStackTrace();
             return R.no();
         }
+    }
+
+    /**
+     * 判断地址是否存在
+     * @param address 地址
+     * @param building 栋
+     * @param unit 单元
+     * @param number 门牌号
+     * @return 房屋
+     */
+    private House isHouse(String address,String building,String unit,String number){
+        LambdaQueryWrapper<House> LQW = new LambdaQueryWrapper<>();
+        LQW.eq(address!=null,House::getAddress,address)
+                .eq(building!=null,House::getBuilding,building)
+                .eq(unit!=null,House::getUnit,unit)
+                .eq(number!=null,House::getNumber,number);
+        return houseMapper.selectOne(LQW);
     }
 }

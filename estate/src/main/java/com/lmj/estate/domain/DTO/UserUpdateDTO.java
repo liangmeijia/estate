@@ -5,8 +5,11 @@ import com.lmj.estate.domain.enums.UserSex;
 import com.lmj.estate.domain.enums.UserStatus;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 @Data
-public class UserDTO {
+public class UserUpdateDTO {
+    @NotNull(message = "id不能为空")
     private Long id;
     private String name;
     private String email;

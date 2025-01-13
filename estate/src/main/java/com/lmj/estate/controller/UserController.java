@@ -1,21 +1,27 @@
 package com.lmj.estate.controller;
 
 import com.lmj.estate.domain.DTO.PageDTO;
-import com.lmj.estate.domain.DTO.UserDTO;
+import com.lmj.estate.domain.DTO.UserAddDTO;
+import com.lmj.estate.domain.DTO.UserUpdateDTO;
 import com.lmj.estate.domain.VO.UserVO;
 import com.lmj.estate.domain.common.R;
 import com.lmj.estate.domain.enums.BalancePaymentMethod;
 import com.lmj.estate.domain.query.UserQuery;
-import com.lmj.estate.entity.User;
 import com.lmj.estate.service.UserService;
-import com.lmj.estate.utils.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import javax.validation.Valid;
 
+/**
+ * @description 业主信息管理
+ *
+ * @author lmj
+ * @version 1.0
+ * @date 2025/01/10 22:37:41
+ */
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -24,86 +30,58 @@ public class UserController {
     /**
      * 新增用户
      * @param userDTO 用户信息
-     * @return
+     * @return 是否成功
      */
     @PostMapping("/user")
-    public R<Void> addUser(@RequestBody UserDTO userDTO){
-        userService.addUser(userDTO);
-        return R.ok();
+    public R<Void> addUser(@Valid @RequestBody UserAddDTO userDTO){
+        return userService.addUser(userDTO);
     }
 
     /**
      * 查询用户
      * @param id 用户id
-     * @return 用户
+     * @return 用户信息
      */
     @GetMapping("/user/{id}")
     public R<UserVO> getUser(@PathVariable("id") long id){
-        return R.ok(userService.findUserById(id));
-    }
-
-    /**
-     * 查询用户列表
-     * @param ids 用户ids
-     * @return 用户列表
-     */
-    @GetMapping("/users")
-    public R<List<User>> getUsers(@RequestParam("ids") List<Long> ids){
-        return R.ok(userService.listByIds(ids));
+        return R.ok(userService.findUserVOById(id));
     }
 
     /**
      * 删除用户
      * @param id 用户id
-     * @return
+     * @return 是否成功
      */
     @DeleteMapping("/user/{id}")
     public R<Void> delUser(@PathVariable long id){
-        userService.removeById(id);
-        return R.ok();
+        if(userService.removeById(id)){
+            return R.ok();
+        }else {
+            return R.no();
+        }
+
     }
 
     /**
      * 修改用户
      * @param userDTO 用户信息
-     * @return
+     * @return 是否成功
      */
     @PutMapping("/user")
-    public R<Void> updateUser(@RequestBody UserDTO userDTO){
-        userService.updateUser(userDTO);
-        return R.ok();
-    }
-
-    /**
-     * 修改用户年龄
-     * @param id 用户id
-     * @param age 需减掉的年龄
-     * @return
-     */
-    @PutMapping("/user/{id}/deduction/{age}")
-    public R<Void> deductionAge(@PathVariable long id,@PathVariable int age){
-        userService.deductionAge(id,age);
-        return R.ok();
+    public R<Void> updateUser(@Valid @RequestBody UserUpdateDTO userDTO){
+        return userService.updateUser(userDTO);
     }
 
     /**
      * 用户余额充值
      * @param id 用户id
      * @param balance 充值金额
-     * @return
+     * @return 是否成功
      */
     @PutMapping("/balance/payment")
     public R<String> billPayment(@RequestParam long id, @RequestParam BalancePaymentMethod balancePaymentMethod, @RequestParam Double balance){
         return userService.increaseBalance(id,balancePaymentMethod,balance);
     }
-//    @GetMapping("/user/page")
-//    public R<PageDTO<UserVO>> getUsersPage(@RequestParam Long pageNum,
-//                                           @RequestParam Long pageSize,
-//                                           @RequestParam(value = "name",required = false) String name,
-//                                           @RequestParam(value = "status",required = false) UserStatus status,
-//                                           @RequestParam(value = "roleId",required = false) UserRole roleId){
-//        return R.ok(userService.findUsersPage(pageNum,pageSize,name,status,roleId));
-//    }
 
     /**
      * 复杂条件【分页】查询
@@ -117,7 +95,7 @@ public class UserController {
     /**
      * 批量导入用户信息
      * @param file 用户信息文件
-     * @return
+     * @return 是否成功
      */
     @PostMapping("/users/import")
     public R<String> importUsers(@RequestParam("file") MultipartFile file) {
@@ -127,11 +105,10 @@ public class UserController {
     /**
      * 批量导出用户信息
      * @param userQuery 查询条件
-     * @return 导出结果
+     * @return 是否成功
      */
     @PostMapping("/users/export")
-    public void exportUsers(@RequestBody UserQuery userQuery,
-                            HttpServletResponse response) {
+    public void exportUsers(@RequestBody UserQuery userQuery, HttpServletResponse response) {
         userService.exportUsers(userQuery, response);
     }
 }

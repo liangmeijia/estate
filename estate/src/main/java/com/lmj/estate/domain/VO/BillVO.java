@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * description 个人账单
+ * @description 账单查询结果
  *
  * @author lmj
  * @version 1.0
@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
  */
 @Data
 public class BillVO {
-
     private Integer id;
     private String address;
     private String building;
@@ -45,9 +44,4 @@ public class BillVO {
      * 缴费状态（0-待缴费；1-缴费成功；2-缴费失败）
      */
     private BillPaymentStatus status;
-    /**
-     * 创建时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createTime;
 }

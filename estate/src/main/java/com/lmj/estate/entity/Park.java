@@ -34,7 +34,7 @@ public class Park implements Serializable {
     /**
      * 车位价格
      */
-    private BigDecimal price;
+    private Double price;
 
     /**
      * 车位状态（0-未使用；1-使用中）

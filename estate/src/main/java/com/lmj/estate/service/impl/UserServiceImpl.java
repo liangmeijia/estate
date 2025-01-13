@@ -9,7 +9,8 @@ import com.lmj.estate.dao.BalanceRecordsMapper;
 import com.lmj.estate.dao.MenuMapper;
 import com.lmj.estate.dao.UserMapper;
 import com.lmj.estate.domain.DTO.PageDTO;
-import com.lmj.estate.domain.DTO.UserDTO;
+import com.lmj.estate.domain.DTO.UserAddDTO;
+import com.lmj.estate.domain.DTO.UserUpdateDTO;
 import com.lmj.estate.domain.VO.UserLoginVO;
 import com.lmj.estate.domain.VO.UserVO;
 import com.lmj.estate.domain.common.R;
@@ -19,7 +20,6 @@ import com.lmj.estate.entity.*;
 import com.lmj.estate.service.UserService;
 import com.lmj.estate.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,20 +46,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private final MenuMapper menuMapper;
     private final BalanceRecordsMapper balanceRecordsMapper;
     private final String[] headers = {"姓名","密码","年龄","性别","电话","邮件","余额","角色","状态"};
-    @Override
-    public void deductionAge(long id, int age) {
-        //1.用户是否存在
-        User user = this.baseMapper.selectById(id);
-        if(user == null){
-            throw new RuntimeException("用户不存在");
-        }
-        //2.年龄是否够减
-        if(user.getAge()<age){
-            throw new RuntimeException("年龄不够减");
-        }
-        //3.减年龄
-        baseMapper.deductionAge(id,age);
-    }
     @Override
     public R<String> increaseBalance(long id, BalancePaymentMethod balancePaymentMethod,Double balance) {
         if(balance<=0.0){
@@ -133,9 +119,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         //1.根据电话和姓名查用户
         LambdaQueryWrapper<User> userLQW = new LambdaQueryWrapper();
-        userLQW.eq(userName!=null,User::getName,userName);
-        userLQW.eq(password!=null,User::getPassword,password);
-        User user = this.baseMapper.selectOne(userLQW);
+        userLQW.eq(userName!=null,User::getName,userName)
+                .eq(password!=null,User::getPassword,password);
+        User user = baseMapper.selectOne(userLQW);
         if(Objects.isNull(user)){
             return R.no("用户不存在");
         }
@@ -155,30 +141,37 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public void addUser(UserDTO userDTO) {
-        User user = new User();
-        BeanUtils.copyProperties(userDTO,user);
+    public R<Void> addUser(UserAddDTO userDTO) {
+        User user = BeanUtil.copyProperties(userDTO,User.class);
         user.setCreateTime(LocalDateTime.now());
-        baseMapper.insert(user);
+        try {
+            baseMapper.insert(user);
+            return R.ok();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.no();
+        }
     }
 
     @Override
-    public UserVO findUserById(long id) {
+    public UserVO findUserVOById(long id) {
         User user = baseMapper.selectById(id);
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(user,userVO);
+        UserVO userVO = BeanUtil.copyProperties(user,UserVO.class);
         userVO.setPassword(userVO.getPassword().substring(0,userVO.getPassword().length()-4)+"**");
         return userVO;
     }
 
     @Override
-    public void updateUser(UserDTO userDTO) {
-        User user = new User();
-        BeanUtils.copyProperties(userDTO,user);
+    public R<Void> updateUser(UserUpdateDTO userDTO) {
+        User user = BeanUtil.copyProperties(userDTO,User.class);
         user.setUpdateTime(LocalDateTime.now());
-        LambdaQueryWrapper<User> userLQW = new LambdaQueryWrapper();
-        userLQW.eq(User::getId,user.getId());
-        baseMapper.update(user,userLQW);
+        try {
+            baseMapper.updateById(user);
+            return R.ok();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.no();
+        }
     }
 
     @Override

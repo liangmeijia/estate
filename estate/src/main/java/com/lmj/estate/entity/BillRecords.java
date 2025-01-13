@@ -6,8 +6,6 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
-import com.lmj.estate.domain.enums.BillPaymentStatus;
 import lombok.Data;
 
 @Data
@@ -20,9 +18,24 @@ public class BillRecords implements Serializable {
     private Long id;
 
     /**
-     * 用户id
+     * 地址
      */
-    private Long userId;
+    private String address;
+
+    /**
+     * 栋
+     */
+    private String building;
+
+    /**
+     * 单元
+     */
+    private String unit;
+
+    /**
+     * 门牌号
+     */
+    private String number;
 
     /**
      * 费用名称
@@ -42,7 +55,12 @@ public class BillRecords implements Serializable {
     /**
      * 缴费状态（0-代缴费；1-缴费成功；2-缴费失败）
      */
-    private BillPaymentStatus status;
+    private Integer status;
+
+    /**
+     * 缴费人id
+     */
+    private Long userId;
 
     /**
      * 逻辑删除
