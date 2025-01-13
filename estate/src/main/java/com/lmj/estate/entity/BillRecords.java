@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import com.lmj.estate.domain.enums.BalancePaymentStatus;
+import com.lmj.estate.domain.enums.BillPaymentStatus;
 import lombok.Data;
 
 @Data
@@ -55,7 +58,7 @@ public class BillRecords implements Serializable {
     /**
      * 缴费状态（0-代缴费；1-缴费成功；2-缴费失败）
      */
-    private Integer status;
+    private BillPaymentStatus status;
 
     /**
      * 缴费人id

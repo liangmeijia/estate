@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lmj.estate.dao.BillMapper;
+import com.lmj.estate.dao.BillRecordsMapper;
 import com.lmj.estate.dao.HouseMapper;
+import com.lmj.estate.dao.UserMapper;
 import com.lmj.estate.domain.DTO.BilUpdateDTO;
 import com.lmj.estate.domain.DTO.BillAddDTO;
 import com.lmj.estate.domain.DTO.PageDTO;
@@ -15,10 +17,13 @@ import com.lmj.estate.domain.common.R;
 import com.lmj.estate.domain.enums.BillPaymentStatus;
 import com.lmj.estate.domain.query.BillQuery;
 import com.lmj.estate.entity.Bill;
+import com.lmj.estate.entity.BillRecords;
 import com.lmj.estate.entity.House;
+import com.lmj.estate.entity.User;
 import com.lmj.estate.service.BillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,6 +40,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements BillService {
     private final HouseMapper houseMapper;
+    private final UserMapper userMapper;
+    private final BillRecordsMapper billRecordsMapper;
     @Override
     public PageDTO<BillVO> getBills(BillQuery billQuery) {
         // 0.初始化最终结果的 Page
@@ -123,6 +130,45 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
         }catch (Exception e){
             e.printStackTrace();
             return R.no();
+        }
+    }
+
+    @Override
+    @Transactional
+    public R<Double> billPayment(Long userId, Long id) {
+        //获取缴费人的余额
+        User user = userMapper.selectById(userId);
+        Double balance = user.getBalance();
+        //获取账单费用
+        Bill bill = baseMapper.selectById(id);
+        Double price = bill.getPrice();
+        //初始化缴费记录
+        BillRecords billRecords = BeanUtil.copyProperties(bill, BillRecords.class);
+        billRecords.setAmount(price);
+        LocalDateTime now = LocalDateTime.now();
+        billRecords.setDate(now);
+        billRecords.setCreateTime(now);
+        billRecords.setUserId(userId);
+        if(balance<price){
+            //余额不足，更新账单的缴费状态
+            bill.setStatus(BillPaymentStatus.PAYMENT_FAILED);
+            baseMapper.updateById(bill);
+            //生成缴费记录
+            billRecords.setStatus(BillPaymentStatus.PAYMENT_FAILED);
+            billRecordsMapper.insert(billRecords);
+            return R.no("余额不足，请先充值");
+        }else {
+            //更新缴费人的余额
+            balance = balance - price;
+            user.setBalance(balance);
+            userMapper.updateById(user);
+            //更新账单的缴费状态
+            bill.setStatus(BillPaymentStatus.PAYMENT_SUCCESS);
+            baseMapper.updateById(bill);
+            //生成缴费记录
+            billRecords.setStatus(BillPaymentStatus.PAYMENT_SUCCESS);
+            billRecordsMapper.insert(billRecords);
+            return R.ok(balance);
         }
     }
 

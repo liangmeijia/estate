@@ -9,7 +9,7 @@ import org.mybatis.generator.internal.util.StringUtility;
 import java.util.Properties;
 
 /**
- * description 为自动删除的实体类进行注释添加
+ * description 为自动生成的实体类进行注释添加
  *
  * @author lmj
  * @version 1.0
