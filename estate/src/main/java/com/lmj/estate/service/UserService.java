@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.lmj.estate.domain.DTO.PageDTO;
 import com.lmj.estate.domain.DTO.UserAddDTO;
 import com.lmj.estate.domain.DTO.UserUpdateDTO;
+import com.lmj.estate.domain.VO.BalanceRecordVO;
 import com.lmj.estate.domain.VO.UserLoginVO;
 import com.lmj.estate.domain.VO.UserVO;
 import com.lmj.estate.domain.common.R;
 import com.lmj.estate.domain.enums.BalancePaymentMethod;
+import com.lmj.estate.domain.query.BalanceRecordQuery;
 import com.lmj.estate.domain.query.UserQuery;
 import com.lmj.estate.entity.User;
 import com.lmj.estate.domain.enums.UserRole;
@@ -29,4 +31,6 @@ public interface UserService extends IService<User> {
 
     R<String> importUsers(MultipartFile file);
     void exportUsers(UserQuery userQuery, HttpServletResponse  response) ;
+
+    PageDTO<BalanceRecordVO> getBalanceRecords(BalanceRecordQuery balanceRecordQuery);
 }

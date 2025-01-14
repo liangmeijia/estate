@@ -3,9 +3,11 @@ package com.lmj.estate.controller;
 import com.lmj.estate.domain.DTO.PageDTO;
 import com.lmj.estate.domain.DTO.UserAddDTO;
 import com.lmj.estate.domain.DTO.UserUpdateDTO;
+import com.lmj.estate.domain.VO.BalanceRecordVO;
 import com.lmj.estate.domain.VO.UserVO;
 import com.lmj.estate.domain.common.R;
 import com.lmj.estate.domain.enums.BalancePaymentMethod;
+import com.lmj.estate.domain.query.BalanceRecordQuery;
 import com.lmj.estate.domain.query.UserQuery;
 import com.lmj.estate.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -84,7 +86,7 @@ public class UserController {
     }
 
     /**
-     * 复杂条件【分页】查询
+     * 分页查询用户
      * @param userQuery 查询条件
      * @return 分页结果
      */
@@ -110,5 +112,15 @@ public class UserController {
     @PostMapping("/users/export")
     public void exportUsers(@RequestBody UserQuery userQuery, HttpServletResponse response) {
         userService.exportUsers(userQuery, response);
+    }
+
+    /**
+     * 分页查询充值记录
+     * @param balanceRecordQuery 查询条件
+     * @return 充值记录
+     */
+    @GetMapping("/balanceRecords")
+    public R<PageDTO<BalanceRecordVO>> getBalanceRecords(@RequestBody BalanceRecordQuery balanceRecordQuery){
+        return R.ok(userService.getBalanceRecords(balanceRecordQuery));
     }
 }

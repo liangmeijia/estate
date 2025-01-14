@@ -12,10 +12,12 @@ import com.lmj.estate.dao.UserMapper;
 import com.lmj.estate.domain.DTO.BilUpdateDTO;
 import com.lmj.estate.domain.DTO.BillAddDTO;
 import com.lmj.estate.domain.DTO.PageDTO;
+import com.lmj.estate.domain.VO.BillRecordVO;
 import com.lmj.estate.domain.VO.BillVO;
 import com.lmj.estate.domain.common.R;
 import com.lmj.estate.domain.enums.BillPaymentStatus;
 import com.lmj.estate.domain.query.BillQuery;
+import com.lmj.estate.domain.query.BillRecordQuery;
 import com.lmj.estate.entity.Bill;
 import com.lmj.estate.entity.BillRecords;
 import com.lmj.estate.entity.House;
@@ -142,6 +144,9 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
         //获取账单费用
         Bill bill = baseMapper.selectById(id);
         Double price = bill.getPrice();
+        if(BillPaymentStatus.PAYMENT_SUCCESS.equals(bill.getStatus())){
+            return R.no("此账单已缴费成功");
+        }
         //初始化缴费记录
         BillRecords billRecords = BeanUtil.copyProperties(bill, BillRecords.class);
         billRecords.setAmount(price);
@@ -170,6 +175,38 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
             billRecordsMapper.insert(billRecords);
             return R.ok(balance);
         }
+    }
+
+    @Override
+    public PageDTO<BillRecordVO> getBillRecords(BillRecordQuery billRecordQuery) {
+        //1.分页条件
+        Page<BillRecords> page = billRecordQuery.toMpPageDefaultByCreateTime();
+        //2.查询条件
+        String address = billRecordQuery.getAddress();
+        String building = billRecordQuery.getBuilding();
+        String unit = billRecordQuery.getUnit();
+        String number = billRecordQuery.getNumber();
+        String amountName = billRecordQuery.getAmountName();
+        LocalDateTime startTime = billRecordQuery.getStartTime();
+        LocalDateTime endTime = billRecordQuery.getEndTime();
+        BillPaymentStatus status = billRecordQuery.getStatus();
+        LambdaQueryWrapper<BillRecords> LQW = new LambdaQueryWrapper<>();
+        LQW.like(address!=null ,BillRecords::getAddress,address)
+                .eq(building!=null,BillRecords::getBuilding,building)
+                .eq(unit!=null,BillRecords::getUnit,unit)
+                .eq(number!=null,BillRecords::getNumber,number)
+                .eq(amountName!=null,BillRecords::getAmountName,amountName)
+                .ge(startTime!=null,BillRecords::getDate,startTime)
+                .le(endTime!=null,BillRecords::getDate,endTime)
+                .eq(status!=null,BillRecords::getStatus,status);
+        billRecordsMapper.selectPage(page,LQW);
+        //3.返回结果
+        return PageDTO.of(page,billRecords -> {
+            BillRecordVO billRecordVO = BeanUtil.copyProperties(billRecords, BillRecordVO.class);
+            User user = userMapper.selectById(billRecords.getUserId());
+            billRecordVO.setName(user.getName());
+            return billRecordVO;
+        });
     }
 
     /**

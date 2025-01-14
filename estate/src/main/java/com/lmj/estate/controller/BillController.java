@@ -3,9 +3,13 @@ package com.lmj.estate.controller;
 import com.lmj.estate.domain.DTO.BilUpdateDTO;
 import com.lmj.estate.domain.DTO.BillAddDTO;
 import com.lmj.estate.domain.DTO.PageDTO;
+import com.lmj.estate.domain.VO.BalanceRecordVO;
+import com.lmj.estate.domain.VO.BillRecordVO;
 import com.lmj.estate.domain.VO.BillVO;
 import com.lmj.estate.domain.common.R;
+import com.lmj.estate.domain.query.BalanceRecordQuery;
 import com.lmj.estate.domain.query.BillQuery;
+import com.lmj.estate.domain.query.BillRecordQuery;
 import com.lmj.estate.service.BillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -77,5 +81,14 @@ public class BillController {
         return billService.billPayment(userId,id);
     }
 
+    /**
+     * 分页查询缴费记录
+     * @param billRecordQuery 查询条件
+     * @return 缴费记录
+     */
+    @GetMapping("/billRecords")
+    public R<PageDTO<BillRecordVO>> getBalanceRecords(@RequestBody BillRecordQuery billRecordQuery){
+        return R.ok(billService.getBillRecords(billRecordQuery));
+    }
 
 }

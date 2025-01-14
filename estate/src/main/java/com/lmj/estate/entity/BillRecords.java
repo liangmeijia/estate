@@ -56,7 +56,7 @@ public class BillRecords implements Serializable {
     private LocalDateTime date;
 
     /**
-     * 缴费状态（0-代缴费；1-缴费成功；2-缴费失败）
+     * 缴费状态（1-缴费成功；2-缴费失败）
      */
     private BillPaymentStatus status;
 

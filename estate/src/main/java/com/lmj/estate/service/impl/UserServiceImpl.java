@@ -11,10 +11,12 @@ import com.lmj.estate.dao.UserMapper;
 import com.lmj.estate.domain.DTO.PageDTO;
 import com.lmj.estate.domain.DTO.UserAddDTO;
 import com.lmj.estate.domain.DTO.UserUpdateDTO;
+import com.lmj.estate.domain.VO.BalanceRecordVO;
 import com.lmj.estate.domain.VO.UserLoginVO;
 import com.lmj.estate.domain.VO.UserVO;
 import com.lmj.estate.domain.common.R;
 import com.lmj.estate.domain.enums.*;
+import com.lmj.estate.domain.query.BalanceRecordQuery;
 import com.lmj.estate.domain.query.UserQuery;
 import com.lmj.estate.entity.*;
 import com.lmj.estate.service.UserService;
@@ -272,5 +274,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public PageDTO<BalanceRecordVO> getBalanceRecords(BalanceRecordQuery balanceRecordQuery) {
+        //构建分页条件
+        Page<BalanceRecords> page = balanceRecordQuery.toMpPageDefaultByCreateTime();
+        //构建查询条件
+        LocalDateTime startTime = balanceRecordQuery.getStartTime();
+        LocalDateTime endTime = balanceRecordQuery.getEndTime();
+        LambdaQueryWrapper<BalanceRecords> LQW = new LambdaQueryWrapper<>();
+        LQW.ge(startTime != null,BalanceRecords::getDate, startTime)
+                .le(endTime != null,BalanceRecords::getDate, endTime);
+        balanceRecordsMapper.selectPage(page, LQW);
+        //返回分页结果
+        return PageDTO.of(page,balanceRecords -> {
+            BalanceRecordVO balanceRecordVO = BeanUtil.copyProperties(balanceRecords, BalanceRecordVO.class);
+            User user = baseMapper.selectById(balanceRecords.getUserId());
+            balanceRecordVO.setName(user.getName());
+            return balanceRecordVO;
+        });
+
     }
 }

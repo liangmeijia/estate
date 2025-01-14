@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.lmj.estate.domain.DTO.BilUpdateDTO;
 import com.lmj.estate.domain.DTO.BillAddDTO;
 import com.lmj.estate.domain.DTO.PageDTO;
+import com.lmj.estate.domain.VO.BillRecordVO;
 import com.lmj.estate.domain.VO.BillVO;
 import com.lmj.estate.domain.common.R;
 import com.lmj.estate.domain.query.BillQuery;
+import com.lmj.estate.domain.query.BillRecordQuery;
 import com.lmj.estate.entity.Bill;
 
 public interface BillService extends IService<Bill> {
@@ -19,4 +21,6 @@ public interface BillService extends IService<Bill> {
     R<Void> updateBill(BilUpdateDTO billDTO);
 
     R<Double> billPayment(Long userId, Long id);
+
+    PageDTO<BillRecordVO> getBillRecords(BillRecordQuery billRecordQuery);
 }

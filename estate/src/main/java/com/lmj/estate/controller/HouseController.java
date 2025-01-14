@@ -59,7 +59,7 @@ public class HouseController {
         return houseService.updateHouse(houseDTO);
     }
     /**
-     * 复杂分页查询房屋
+     * 分页查询房屋
      * @param houseQuery 分页查询条件
      * @return 查询结果
      */
@@ -103,7 +103,7 @@ public class HouseController {
     }
 
     /**
-     * 复杂条件查询车位
+     * 分页查询车位
      * @param parkQuery 查询条件
      * @return 查询结果
      */
