@@ -27,7 +27,7 @@ public class BillController {
     private final BillService billService;
 
     /**
-     * 复杂条件【分页】查询账单
+     * 分页查询账单
      * @param billQuery 查询条件
      * @return 账单列表
      */

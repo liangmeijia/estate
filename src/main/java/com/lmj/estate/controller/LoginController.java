@@ -7,6 +7,8 @@ import com.lmj.estate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 public class LoginController {
@@ -14,13 +16,12 @@ public class LoginController {
 
     /**
      * 登录
-     * @param name 用户名
-     * @param password 密码
+     * @param form 登录参数（用户名、密码）
      * @return 是否成功
      */
     @PostMapping("/login")
-    public R<UserLoginVO> login(@RequestParam String name,@RequestParam String password){
-        return userService.login(name, password);
+    public R<UserLoginVO> login(@RequestBody Map<String, String> form){
+        return userService.login(form.get("name"), form.get("password"));
     }
 
     /**
