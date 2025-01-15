@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lmj.estate.dao.BalanceRecordsMapper;
 import com.lmj.estate.dao.MenuMapper;
 import com.lmj.estate.dao.UserMapper;
+import com.lmj.estate.domain.DTO.BalancePaymentDTO;
 import com.lmj.estate.domain.DTO.PageDTO;
 import com.lmj.estate.domain.DTO.UserAddDTO;
 import com.lmj.estate.domain.DTO.UserUpdateDTO;
@@ -49,7 +50,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private final BalanceRecordsMapper balanceRecordsMapper;
     private final String[] headers = {"姓名","密码","年龄","性别","电话","邮件","余额","角色","状态"};
     @Override
-    public R<String> increaseBalance(long id, BalancePaymentMethod balancePaymentMethod,Double balance) {
+    public R<String> increaseBalance(BalancePaymentDTO balancePaymentDTO) {
+        Long id = balancePaymentDTO.getUserId();
+        BalancePaymentMethod method= balancePaymentDTO.getMethod();
+        Double balance = balancePaymentDTO.getBalance();
+
         if(balance<=0.0){
             return R.no("请输入正确的充值金额");
         }
@@ -59,7 +64,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         balanceRecords.setUserId(id);
         LocalDateTime now = LocalDateTime.now();
         balanceRecords.setDate(now);
-        balanceRecords.setMethod(balancePaymentMethod);
+        balanceRecords.setMethod(method);
         balanceRecords.setCreateTime(now);
         //余额充值
         try {

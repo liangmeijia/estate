@@ -86,7 +86,7 @@ public class BillController {
      * @param billRecordQuery 查询条件
      * @return 缴费记录
      */
-    @GetMapping("/billRecords")
+    @PostMapping("/billRecords")
     public R<PageDTO<BillRecordVO>> getBalanceRecords(@RequestBody BillRecordQuery billRecordQuery){
         return R.ok(billService.getBillRecords(billRecordQuery));
     }

@@ -1,5 +1,6 @@
 package com.lmj.estate.controller;
 
+import com.lmj.estate.domain.DTO.BalancePaymentDTO;
 import com.lmj.estate.domain.DTO.PageDTO;
 import com.lmj.estate.domain.DTO.UserAddDTO;
 import com.lmj.estate.domain.DTO.UserUpdateDTO;
@@ -76,13 +77,12 @@ public class UserController {
 
     /**
      * 用户余额充值
-     * @param id 用户id
-     * @param balance 充值金额
+     * @param balancePaymentDTO 余额充值参数
      * @return 是否成功
      */
-    @PutMapping("/balance/payment")
-    public R<String> billPayment(@RequestParam long id, @RequestParam BalancePaymentMethod balancePaymentMethod, @RequestParam Double balance){
-        return userService.increaseBalance(id,balancePaymentMethod,balance);
+    @PostMapping("/balance/payment")
+    public R<String> balancePayment(@RequestBody BalancePaymentDTO balancePaymentDTO){
+        return userService.increaseBalance(balancePaymentDTO);
     }
 
     /**
@@ -119,7 +119,7 @@ public class UserController {
      * @param balanceRecordQuery 查询条件
      * @return 充值记录
      */
-    @GetMapping("/balanceRecords")
+    @PostMapping("/balanceRecords")
     public R<PageDTO<BalanceRecordVO>> getBalanceRecords(@RequestBody BalanceRecordQuery balanceRecordQuery){
         return R.ok(userService.getBalanceRecords(balanceRecordQuery));
     }

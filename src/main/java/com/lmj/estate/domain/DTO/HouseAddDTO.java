@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Value;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -42,13 +43,13 @@ public class HouseAddDTO {
     /**
      * 面积
      */
-    @NotBlank(message = "面积不能为空")
+    @NotNull(message = "面积不能为空")
     private Double area;
 
     /**
      * 房价
      */
-    @NotBlank(message = "房价不能为空")
+    @NotNull(message = "房价不能为空")
     private Double price;
 
     /**

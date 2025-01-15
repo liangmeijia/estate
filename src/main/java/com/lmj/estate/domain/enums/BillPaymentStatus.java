@@ -15,7 +15,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum BillPaymentStatus {
-    PAYMENT_NON(0,"代缴费"),
+    PAYMENT_NON(0,"待缴费"),
     PAYMENT_SUCCESS(1,"缴费成功"),
     PAYMENT_FAILED(2,"缴费失败");
     @EnumValue

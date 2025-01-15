@@ -2,6 +2,7 @@ package com.lmj.estate.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lmj.estate.domain.DTO.BalancePaymentDTO;
 import com.lmj.estate.domain.DTO.PageDTO;
 import com.lmj.estate.domain.DTO.UserAddDTO;
 import com.lmj.estate.domain.DTO.UserUpdateDTO;
@@ -20,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 
 public interface UserService extends IService<User> {
-    R<String> increaseBalance(long id, BalancePaymentMethod balancePaymentMethod,Double balance);
+    R<String> increaseBalance(BalancePaymentDTO balancePaymentDTO);
     PageDTO<UserVO> findUsersPage(Long pageNum, Long pageSize, String name, UserStatus status, UserRole roleId);
     PageDTO<UserVO> findUsersPage(UserQuery userQuery);
     R<UserLoginVO> login(String userName, String password);
