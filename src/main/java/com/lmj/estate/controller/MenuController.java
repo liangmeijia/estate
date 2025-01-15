@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.*;
 public class MenuController {
     private final MenuService menuService;
 
+    /**
+     * 获取菜单
+     * @param roleId 角色id
+     * @return 角色对应的菜单
+     */
     @GetMapping(value = "/list/{roleId}")
     public R<Object> list(@PathVariable String roleId){
         return R.ok(menuService.lambdaQuery().like(Menu::getMenuRight, roleId).list());

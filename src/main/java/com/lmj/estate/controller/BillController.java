@@ -32,7 +32,7 @@ public class BillController {
      * @return 账单列表
      */
     @PostMapping("/bills")
-    public R<PageDTO<BillVO>> getBillsById(@RequestBody BillQuery billQuery){
+    public R<PageDTO<BillVO>> getBills(@RequestBody BillQuery billQuery){
         return R.ok(billService.getBills(billQuery));
     }
 

@@ -16,6 +16,7 @@ import com.lmj.estate.domain.VO.BillRecordVO;
 import com.lmj.estate.domain.VO.BillVO;
 import com.lmj.estate.domain.common.R;
 import com.lmj.estate.domain.enums.BillPaymentStatus;
+import com.lmj.estate.domain.enums.UserRole;
 import com.lmj.estate.domain.query.BillQuery;
 import com.lmj.estate.domain.query.BillRecordQuery;
 import com.lmj.estate.entity.Bill;
@@ -23,13 +24,12 @@ import com.lmj.estate.entity.BillRecords;
 import com.lmj.estate.entity.House;
 import com.lmj.estate.entity.User;
 import com.lmj.estate.service.BillService;
+import com.lmj.estate.utils.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * description 账单服务类
@@ -44,53 +44,32 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
     private final HouseMapper houseMapper;
     private final UserMapper userMapper;
     private final BillRecordsMapper billRecordsMapper;
+    private final UserContext userContext;
     @Override
     public PageDTO<BillVO> getBills(BillQuery billQuery) {
-        // 0.初始化最终结果的 Page
-        Page<Bill> finalPage = billQuery.toMpPageDefaultByCreateTime();
-        List<Bill> combinedRecords = new ArrayList<>();
-        List<House> houses = null;
+        User cur_user = userContext.getUser();
+        // 0.构建分页条件
+        Page<Bill> page = billQuery.toMpPageDefaultByCreateTime();
         // 1.构建查询条件
-        Long userId = billQuery.getId();
+        String address = billQuery.getAddress();
+        String building = billQuery.getBuilding();
+        String unit = billQuery.getUnit();
+        String number = billQuery.getNumber();
         String amountName = billQuery.getAmountName();
         BillPaymentStatus status = billQuery.getStatus();
-        if(StrUtil.isEmptyIfStr(userId)){
-            // 2.查询房产表中的所有记录
-            houses = houseMapper.selectList(null);
-        }else {
-            //2.查询用户名下的所有房产
-            LambdaQueryWrapper<House> LQWHouse = new LambdaQueryWrapper<>();
-            LQWHouse.eq(House::getUserId , userId);
-            houses = houseMapper.selectList(LQWHouse);
-        }
-        if(StrUtil.isEmptyIfStr(houses)){
-            return null;
-        }
-        //3。循环获取每一个房产下的所有账单
-        for (House house:houses){
-            LambdaQueryWrapper<Bill> LQW = new LambdaQueryWrapper<>();
-            LQW.eq(house.getAddress()!=null,Bill::getAddress,house.getAddress())
-                    .eq(house.getBuilding()!=null,Bill::getBuilding,house.getBuilding())
-                    .eq(house.getUnit()!=null,Bill::getUnit,house.getUnit())
-                    .eq(house.getNumber()!=null,Bill::getNumber,house.getNumber())
-                    .eq(amountName!=null,Bill::getAmountName,amountName)
-                    .eq(status!=null,Bill::getStatus,status);
-            // 累积当前结果到 combinedRecords
-            combinedRecords.addAll(baseMapper.selectList(LQW));
-        }
-        // 4.手动分页逻辑
-        Long current = finalPage.getCurrent();
-        Long size = finalPage.getSize();
-        Long start = (current - 1) * size;
-        Long end = Math.min(start + size, combinedRecords.size());
-        List<Bill> paginatedList = combinedRecords.subList(start.intValue(), end.intValue());
-
-        // 5.设置结果到最终 Page 对象
-        finalPage.setRecords(paginatedList);
-        finalPage.setTotal(combinedRecords.size());
-        //6.得到结果
-        return PageDTO.of(finalPage, bill -> {
+        lambdaQuery().like(address!=null,Bill::getAddress,address)
+                .eq(building!=null,Bill::getBuilding,building)
+                .eq(unit!=null,Bill::getUnit,unit)
+                .eq(number!=null,Bill::getNumber,number)
+                .eq(amountName!=null,Bill::getAmountName,amountName)
+                .eq(status!=null,Bill::getStatus,status)
+                .eq((cur_user!=null)&&(cur_user.getRoleId() == UserRole.USER),Bill::getUserId,cur_user.getId())
+                .page(page);
+        //2.得到结果
+        return PageDTO.of(page, bill -> {
             BillVO billVO = BeanUtil.copyProperties(bill, BillVO.class);
+            User user = userMapper.selectById(bill.getUserId());
+            billVO.setName(user.getName());
             return billVO;
         });
     }
@@ -105,6 +84,7 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
         //1.添加账单
         Bill bill = new Bill();
         BeanUtil.copyProperties(billDTO,bill);
+        bill.setUserId(house.getUserId());
         bill.setCreateTime(LocalDateTime.now());
         try{
             baseMapper.insert(bill);
@@ -122,7 +102,7 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
         if(StrUtil.isEmptyIfStr(house)){
             return R.no("无此房产");
         }
-        //1.
+        //1.更新账单
         Bill bill = new Bill();
         BeanUtil.copyProperties(billDTO,bill);
         bill.setUpdateTime(LocalDateTime.now());

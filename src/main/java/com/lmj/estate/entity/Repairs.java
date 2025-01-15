@@ -74,12 +74,6 @@ public class Repairs implements Serializable {
      * 维修费用
      */
     private BigDecimal price;
-
-    /**
-     * 维修账单id
-     */
-    private Integer billId;
-
     /**
      * 逻辑删除
      */

@@ -1,5 +1,5 @@
 # 忽略log 文件
 logs/
 # 忽略所有的 .idea 文件夹（例如，用于Python的PyCharm项目）
-.idea/
+.idea
 target/

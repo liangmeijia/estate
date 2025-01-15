@@ -24,7 +24,14 @@ public class BillVO {
     private String building;
     private String unit;
     private String number;
-
+    /**
+     * 户主姓名
+     */
+    private String name;
+    /**
+     * 户主id
+     */
+    private Long userId;
     /**
      * 费用名称
      */

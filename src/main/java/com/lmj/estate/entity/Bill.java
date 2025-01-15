@@ -38,6 +38,10 @@ public class Bill implements Serializable {
      * 门牌号
      */
     private String number;
+    /**
+     * 户主id
+     */
+    private Long userId;
 
     /**
      * 费用名称

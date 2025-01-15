@@ -12,8 +12,33 @@ import lombok.Data;
  */
 @Data
 public class BillQuery extends PageQuery{
-    private Long id;
+    /**
+     * 地址
+     */
+    private String address;
+
+    /**
+     * 栋
+     */
+    private String building;
+
+    /**
+     * 单元
+     */
+    private String unit;
+
+    /**
+     * 门牌号
+     */
+    private String number;
+
+    /**
+     * 费用名称
+     */
     private String amountName;
+    /**
+     * 缴费状态（0-待缴费；1-缴费成功；2-缴费失败）
+     */
     private BillPaymentStatus status;
 
 }
