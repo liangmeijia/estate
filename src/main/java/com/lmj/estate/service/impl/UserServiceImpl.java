@@ -8,10 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lmj.estate.dao.BalanceRecordsMapper;
 import com.lmj.estate.dao.MenuMapper;
 import com.lmj.estate.dao.UserMapper;
-import com.lmj.estate.domain.DTO.BalancePaymentDTO;
-import com.lmj.estate.domain.DTO.PageDTO;
-import com.lmj.estate.domain.DTO.UserAddDTO;
-import com.lmj.estate.domain.DTO.UserUpdateDTO;
+import com.lmj.estate.domain.DTO.*;
 import com.lmj.estate.domain.VO.BalanceRecordVO;
 import com.lmj.estate.domain.VO.UserLoginVO;
 import com.lmj.estate.domain.VO.UserVO;
@@ -22,6 +19,7 @@ import com.lmj.estate.domain.query.UserQuery;
 import com.lmj.estate.entity.*;
 import com.lmj.estate.service.UserService;
 import com.lmj.estate.utils.JwtUtils;
+import com.lmj.estate.utils.PasswordUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -111,7 +109,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //4.得到结果
         return PageDTO.of(page, user -> {
             UserVO userVO = BeanUtil.copyProperties(user, UserVO.class);
-            userVO.setPassword(userVO.getPassword().substring(0,userVO.getPassword().length()-4)+"**");
+            userVO.setPassword(userVO.getPassword().substring(0,6)+"**");
             return userVO;
         });
     }
@@ -124,27 +122,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if(StrUtil.isEmptyIfStr(password)){
             return R.no("密码不能为空");
         }
-        //1.根据电话和姓名查用户
-        LambdaQueryWrapper<User> userLQW = new LambdaQueryWrapper();
-        userLQW.eq(userName!=null,User::getName,userName)
-                .eq(password!=null,User::getPassword,password);
-        User user = baseMapper.selectOne(userLQW);
-        if(Objects.isNull(user)){
+        //1.
+        User user = baseMapper.selectOneByName(userName);
+        if(StrUtil.isEmptyIfStr(user)){
             return R.no("用户不存在");
+        }else if(!PasswordUtil.checkPassword(password, user.getPassword())){
+            return R.no("密码错误");
+        }else {
+            //登录成功
+            log.debug("用户:"+userName+" 登录信息认证成功");
+            //2.用户登录成功，生成JWT令牌并返回给客户端
+            String jwtToken = JwtUtils.generateJwtToken(user.getId().toString(), DEFAULT_EXPIRED_SECONDS); // 令牌有效期10分钟
+            log.debug("JWT Token: " + jwtToken);
+            //3.结果封装
+            UserLoginVO vo = BeanUtil.copyProperties(user, UserLoginVO.class);
+            vo.setPassword(vo.getPassword().substring(0,6)+"**");
+            vo.setToken(jwtToken);
+            LambdaQueryWrapper<Menu> menuLQW = new LambdaQueryWrapper();
+            menuLQW.like(Menu::getMenuRight, user.getRoleId().getValue());
+            List<Menu> menus = menuMapper.selectList(menuLQW);
+            vo.setMenus(menus);
+            return R.ok(vo);
         }
-        log.debug("用户:"+userName+" 登录信息认证成功");
-        //2.用户登录成功，生成JWT令牌并返回给客户端
-        String jwtToken = JwtUtils.generateJwtToken(user.getId().toString(), DEFAULT_EXPIRED_SECONDS); // 令牌有效期10分钟
-        log.debug("JWT Token: " + jwtToken);
-        //3.结果封装
-        UserLoginVO vo = BeanUtil.copyProperties(user, UserLoginVO.class);
-        vo.setPassword(vo.getPassword().substring(0,vo.getPassword().length()-4)+"**");
-        vo.setToken(jwtToken);
-        LambdaQueryWrapper<Menu> menuLQW = new LambdaQueryWrapper();
-        menuLQW.like(Menu::getMenuRight, user.getRoleId().getValue());
-        List<Menu> menus = menuMapper.selectList(menuLQW);
-        vo.setMenus(menus);
-        return R.ok(vo);
     }
 
     @Override
@@ -164,7 +163,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public UserVO findUserVOById(long id) {
         User user = baseMapper.selectById(id);
         UserVO userVO = BeanUtil.copyProperties(user,UserVO.class);
-        userVO.setPassword(userVO.getPassword().substring(0,userVO.getPassword().length()-4)+"**");
+        userVO.setPassword(userVO.getPassword().substring(0,6)+"**");
         return userVO;
     }
 
@@ -300,5 +299,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return balanceRecordVO;
         });
 
+    }
+
+    @Override
+    public R<Void> register(UserRegisterDTO userRegisterDTO) {
+        //0.
+        String name = userRegisterDTO.getName();
+        User user = baseMapper.selectOneByName(name);
+        if(!StrUtil.isEmptyIfStr(user)){
+            return R.no("用户已存在");
+        }
+        //1.密码加密
+        userRegisterDTO.setPassword(PasswordUtil.hashPassword(userRegisterDTO.getPassword()));
+        user = BeanUtil.copyProperties(userRegisterDTO, User.class);
+        user.setRoleId(UserRole.USER);
+        user.setStatus(UserStatus.NORMAL);
+        user.setCreateTime(LocalDateTime.now());
+        //2.
+        try {
+            baseMapper.insert(user);
+            return R.ok("注册成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.no("注册失败");
+        }
     }
 }

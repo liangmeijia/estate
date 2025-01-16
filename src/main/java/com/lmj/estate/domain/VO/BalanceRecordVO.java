@@ -16,12 +16,14 @@ import java.time.LocalDateTime;
 @Data
 public class BalanceRecordVO {
     private Long id;
-
+    /**
+     * 用户id
+     */
+    private Long userId;
     /**
      * 用户姓名
      */
     private String name;
-
     /**
      * 充值金额
      */

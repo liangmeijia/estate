@@ -47,11 +47,6 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
     private final UserContext userContext;
     @Override
     public PageDTO<BillVO> getBills(BillQuery billQuery) {
-        User cur_user = userContext.getUser();
-        Long userId = null;
-        if(!StrUtil.isEmptyIfStr(cur_user)){
-            userId = cur_user.getId();
-        }
         // 0.构建分页条件
         Page<Bill> page = billQuery.toMpPageDefaultByCreateTime();
         // 1.构建查询条件
@@ -67,7 +62,6 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
                 .eq(number!=null,Bill::getNumber,number)
                 .eq(amountName!=null,Bill::getAmountName,amountName)
                 .eq(status!=null,Bill::getStatus,status)
-                .eq((cur_user!=null)&&(cur_user.getRoleId() == UserRole.USER),Bill::getUserId,userId)
                 .page(page);
         //2.得到结果
         return PageDTO.of(page, bill -> {
@@ -133,6 +127,7 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
         }
         //初始化缴费记录
         BillRecords billRecords = BeanUtil.copyProperties(bill, BillRecords.class);
+        billRecords.setId(null);
         billRecords.setAmount(price);
         LocalDateTime now = LocalDateTime.now();
         billRecords.setDate(now);

@@ -2,10 +2,7 @@ package com.lmj.estate.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.lmj.estate.domain.DTO.BalancePaymentDTO;
-import com.lmj.estate.domain.DTO.PageDTO;
-import com.lmj.estate.domain.DTO.UserAddDTO;
-import com.lmj.estate.domain.DTO.UserUpdateDTO;
+import com.lmj.estate.domain.DTO.*;
 import com.lmj.estate.domain.VO.BalanceRecordVO;
 import com.lmj.estate.domain.VO.UserLoginVO;
 import com.lmj.estate.domain.VO.UserVO;
@@ -34,4 +31,7 @@ public interface UserService extends IService<User> {
     void exportUsers(UserQuery userQuery, HttpServletResponse  response) ;
 
     PageDTO<BalanceRecordVO> getBalanceRecords(BalanceRecordQuery balanceRecordQuery);
+
+    R<Void> register(UserRegisterDTO userRegisterDTO);
+
 }

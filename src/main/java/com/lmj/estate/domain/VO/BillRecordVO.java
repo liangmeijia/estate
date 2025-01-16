@@ -61,4 +61,8 @@ public class BillRecordVO {
      * 缴费人姓名
      */
     private String name;
+    /**
+     * 缴费人id
+     */
+    private Long userId;
 }
