@@ -1,30 +1,20 @@
-package com.lmj.estate.entity;
+package com.lmj.estate.domain.VO;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lmj.estate.domain.enums.RepairStatus;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
+/**
+ * @author lmj
+ * @version 1.0
+ * @description
+ * @date 2025/01/20 16:59:36
+ */
 @Data
-@TableName(value = "repairs",autoResultMap = true)
-public class Repairs implements Serializable {
-    /**
-     * 主键
-     */
-    @TableId(value = "id", type = IdType.AUTO)
+public class RepairDetailVO {
     private Long id;
-
-    /**
-     * 申请人id
-     */
-    private Long applicantId;
-
     /**
      * 申请人姓名
      */
@@ -63,11 +53,13 @@ public class Repairs implements Serializable {
     /**
      * 维修开始日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
 
     /**
      * 维修截至日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endTime;
 
     /**
@@ -75,25 +67,7 @@ public class Repairs implements Serializable {
      */
     private Double price;
     /**
-     * 逻辑删除
-     */
-    @TableLogic
-    private Integer deleteFlag;
-
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createTime;
-
-    /**
-     * 更新时间
-     */
-    private LocalDateTime updateTime;
-
-    /**
      * 维修申请事由
      */
     private String reason;
-
-    private static final long serialVersionUID = 1L;
 }

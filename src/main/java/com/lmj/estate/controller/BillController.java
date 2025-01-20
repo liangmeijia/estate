@@ -77,7 +77,7 @@ public class BillController {
      * @return 是否成功,如果成功就返回缴费后的余额
      */
     @PostMapping("/bill/payment")
-    public R<Double> billPayment(@RequestParam Long userId,@RequestParam Long id){
+    public R<Void> billPayment(@RequestParam Long userId,@RequestParam Long id){
         return billService.billPayment(userId,id);
     }
 

@@ -5,10 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lmj.estate.dao.BillMapper;
-import com.lmj.estate.dao.BillRecordsMapper;
-import com.lmj.estate.dao.HouseMapper;
-import com.lmj.estate.dao.UserMapper;
+import com.lmj.estate.dao.*;
 import com.lmj.estate.domain.DTO.BilUpdateDTO;
 import com.lmj.estate.domain.DTO.BillAddDTO;
 import com.lmj.estate.domain.DTO.PageDTO;
@@ -16,13 +13,11 @@ import com.lmj.estate.domain.VO.BillRecordVO;
 import com.lmj.estate.domain.VO.BillVO;
 import com.lmj.estate.domain.common.R;
 import com.lmj.estate.domain.enums.BillPaymentStatus;
+import com.lmj.estate.domain.enums.RepairStatus;
 import com.lmj.estate.domain.enums.UserRole;
 import com.lmj.estate.domain.query.BillQuery;
 import com.lmj.estate.domain.query.BillRecordQuery;
-import com.lmj.estate.entity.Bill;
-import com.lmj.estate.entity.BillRecords;
-import com.lmj.estate.entity.House;
-import com.lmj.estate.entity.User;
+import com.lmj.estate.entity.*;
 import com.lmj.estate.service.BillService;
 import com.lmj.estate.utils.UserContext;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +39,8 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
     private final HouseMapper houseMapper;
     private final UserMapper userMapper;
     private final BillRecordsMapper billRecordsMapper;
-    private final UserContext userContext;
+    private final BillRepairsMapper billRepairsMapper;
+    private final RepairsMapper repairsMapper;
     @Override
     public PageDTO<BillVO> getBills(BillQuery billQuery) {
         // 0.构建分页条件
@@ -115,7 +111,7 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
 
     @Override
     @Transactional
-    public R<Double> billPayment(Long userId, Long id) {
+    public R<Void> billPayment(Long userId, Long id) {
         //获取缴费人的余额
         User user = userMapper.selectById(userId);
         Double balance = user.getBalance();
@@ -152,7 +148,14 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
             //生成缴费记录
             billRecords.setStatus(BillPaymentStatus.PAYMENT_SUCCESS);
             billRecordsMapper.insert(billRecords);
-            return R.ok(balance);
+            //此账单是维修账单,修改维修申请的状态
+            LambdaQueryWrapper<BillRepairs> LQW = new LambdaQueryWrapper<>();
+            LQW.eq(BillRepairs::getBillId,id);
+            BillRepairs billRepairs = billRepairsMapper.selectOne(LQW);
+            Repairs repairs = repairsMapper.selectById(billRepairs.getRepairId());
+            repairs.setStatus(RepairStatus.REPAIRED);
+            repairsMapper.updateById(repairs);
+            return R.ok("缴费成功");
         }
     }
 

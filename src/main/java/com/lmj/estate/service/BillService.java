@@ -20,7 +20,7 @@ public interface BillService extends IService<Bill> {
 
     R<Void> updateBill(BilUpdateDTO billDTO);
 
-    R<Double> billPayment(Long userId, Long id);
+    R<Void> billPayment(Long userId, Long id);
 
     PageDTO<BillRecordVO> getBillRecords(BillRecordQuery billRecordQuery);
 }
