@@ -34,4 +34,7 @@ public interface UserService extends IService<User> {
 
     R<Void> register(UserRegisterDTO userRegisterDTO);
 
+    R<Void> resetPassword(Long id);
+
+    R<Void> updatePassword(UpdatePasswordDTO updatePasswordDTO);
 }

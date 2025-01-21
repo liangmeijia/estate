@@ -3,6 +3,7 @@ package com.lmj.estate.controller;
 import com.lmj.estate.domain.DTO.PageDTO;
 import com.lmj.estate.domain.DTO.ProcessRepairDTO;
 import com.lmj.estate.domain.DTO.RepairAddDTO;
+import com.lmj.estate.domain.DTO.RepairUpdateDTO;
 import com.lmj.estate.domain.VO.RepairDetailVO;
 import com.lmj.estate.domain.VO.RepairVO;
 import com.lmj.estate.domain.common.R;
@@ -29,7 +30,7 @@ public class RepairsController {
      * @param repairsAddDTO 维修申请
      * @return 是否成功
      */
-    @PostMapping("repair")
+    @PostMapping("/repair")
     public R<Void> addRepairs(@Valid @RequestBody RepairAddDTO repairsAddDTO){
          return repairsService.addRepair(repairsAddDTO);
     }
@@ -39,7 +40,7 @@ public class RepairsController {
      * @param processRepairsDTO 处理维修申请的条件
      * @return 是否成功
      */
-    @PutMapping("repair")
+    @PutMapping("/repair/process")
     public R<Void> processRepairs(@Valid @RequestBody ProcessRepairDTO processRepairsDTO){
         return repairsService.processRepair(processRepairsDTO);
     }
@@ -49,7 +50,7 @@ public class RepairsController {
      * @param repairQuery 查询条件
      * @return 查询结果
      */
-    @PostMapping("repairs")
+    @PostMapping("/repairs")
     public R<PageDTO<RepairVO>> getRepairs(@Valid @RequestBody RepairQuery repairQuery){
         return R.ok(repairsService.getRepairs(repairQuery));
     }
@@ -64,5 +65,28 @@ public class RepairsController {
         return repairsService.getRepairDetail(id);
     }
 
+    /**
+     * 修改维修申请
+     * @param repairUpdateDTO 修改条件
+     * @return 是否成功
+     */
+    @PutMapping("/repair")
+    public R<Void> updateRepair(@Valid @RequestBody RepairUpdateDTO repairUpdateDTO){
+        return repairsService.updateRepair(repairUpdateDTO);
+    }
+
+    /**
+     * 删除维修申请
+     * @param id  维修申请id
+     * @return 是否成功
+     */
+    @DeleteMapping("/repair/{id}")
+    public R<Void> delRepair(@PathVariable Long id){
+        if(repairsService.removeById(id)){
+            return R.ok();
+        }else {
+            return R.no();
+        }
+    }
 
 }

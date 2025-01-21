@@ -40,6 +40,7 @@ import java.util.Iterator;
 
 
 import static com.lmj.estate.domain.constant.ManageConst.DEFAULT_EXPIRED_SECONDS;
+import static com.lmj.estate.domain.constant.ManageConst.INIT_PASSWORD;
 
 @Service
 @RequiredArgsConstructor
@@ -150,6 +151,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public R<Void> addUser(UserAddDTO userDTO) {
         User user = BeanUtil.copyProperties(userDTO,User.class);
         user.setCreateTime(LocalDateTime.now());
+        user.setPassword(PasswordUtil.hashPassword(INIT_PASSWORD));
         try {
             baseMapper.insert(user);
             return R.ok();
@@ -210,7 +212,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 }
                 user.setName(row.getCell(0).getStringCellValue());
                 row.getCell(1).setCellType(CellType.STRING); // 密码强制设置为字符串类
-                user.setPassword(row.getCell(1).getStringCellValue());
+                user.setPassword(PasswordUtil.hashPassword(row.getCell(1).getStringCellValue()));
                 user.setAge((int) row.getCell(2).getNumericCellValue());
                 user.setSex(UserSex.fromDesc(row.getCell(3).getStringCellValue()));
                 row.getCell(4).setCellType(CellType.STRING); // 电话强制设置为字符串类
@@ -287,9 +289,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //构建查询条件
         LocalDateTime startTime = balanceRecordQuery.getStartTime();
         LocalDateTime endTime = balanceRecordQuery.getEndTime();
+        Long curUserId = balanceRecordQuery.getCurUserId();
+        User curUser = baseMapper.selectById(curUserId);
         LambdaQueryWrapper<BalanceRecords> LQW = new LambdaQueryWrapper<>();
         LQW.ge(startTime != null,BalanceRecords::getDate, startTime)
-                .le(endTime != null,BalanceRecords::getDate, endTime);
+                .le(endTime != null,BalanceRecords::getDate, endTime)
+                .eq((curUser!=null)&&(curUser.getRoleId()==UserRole.USER),BalanceRecords::getUserId,curUserId);;
         balanceRecordsMapper.selectPage(page, LQW);
         //返回分页结果
         return PageDTO.of(page,balanceRecords -> {
@@ -323,5 +328,49 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             e.printStackTrace();
             return R.no("注册失败");
         }
+    }
+
+    @Override
+    public R<Void> resetPassword(Long id) {
+        User user = baseMapper.selectById(id);
+        if(StrUtil.isEmptyIfStr(user)){
+            return R.no("无此用户");
+        }
+        //初始化密码
+        user.setPassword(PasswordUtil.hashPassword(INIT_PASSWORD));
+        try {
+            baseMapper.updateById(user);
+            return R.ok("初始化密码： "+INIT_PASSWORD);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.no("重置密码失败");
+        }
+
+
+    }
+
+    @Override
+    public R<Void> updatePassword(UpdatePasswordDTO updatePasswordDTO) {
+        User user = baseMapper.selectById(updatePasswordDTO.getUserId());
+        if(StrUtil.isEmptyIfStr(user)){
+            return R.no("无此用户");
+        }
+
+        if(!PasswordUtil.checkPassword(updatePasswordDTO.getPassword(), user.getPassword())){
+            return R.no("原密码错误");
+        }
+
+        if(!updatePasswordDTO.getNewPassword().equals(updatePasswordDTO.getConfirmNewPassword())){
+            return R.no("确认密码错误");
+        }
+        user.setPassword(PasswordUtil.hashPassword(updatePasswordDTO.getNewPassword()));
+        try {
+            baseMapper.updateById(user);
+            return R.ok("修改密码成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.no("修改密码出错");
+        }
+
     }
 }

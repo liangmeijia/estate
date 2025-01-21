@@ -52,12 +52,15 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
         String number = billQuery.getNumber();
         String amountName = billQuery.getAmountName();
         BillPaymentStatus status = billQuery.getStatus();
+        Long curUserId = billQuery.getCurUserId();
+        User curUser = userMapper.selectById(curUserId);
         lambdaQuery().like(address!=null,Bill::getAddress,address)
                 .eq(building!=null,Bill::getBuilding,building)
                 .eq(unit!=null,Bill::getUnit,unit)
                 .eq(number!=null,Bill::getNumber,number)
                 .eq(amountName!=null,Bill::getAmountName,amountName)
                 .eq(status!=null,Bill::getStatus,status)
+                .eq((curUser!=null)&&(curUser.getRoleId()==UserRole.USER),Bill::getUserId,curUserId)
                 .page(page);
         //2.得到结果
         return PageDTO.of(page, bill -> {
@@ -74,6 +77,9 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
         House house = isHouse(billDTO.getAddress(),billDTO.getBuilding(),billDTO.getUnit(),billDTO.getNumber());
         if(StrUtil.isEmptyIfStr(house)){
             return R.no("无此房产");
+        }
+        if(StrUtil.isEmptyIfStr(house.getUserId())){
+            return R.no("此房产无户主，无法添加账单");
         }
         //1.添加账单
         Bill bill = new Bill();
@@ -148,13 +154,15 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
             //生成缴费记录
             billRecords.setStatus(BillPaymentStatus.PAYMENT_SUCCESS);
             billRecordsMapper.insert(billRecords);
-            //此账单是维修账单,修改维修申请的状态
+            //如果此账单是维修账单,修改维修申请的状态
             LambdaQueryWrapper<BillRepairs> LQW = new LambdaQueryWrapper<>();
             LQW.eq(BillRepairs::getBillId,id);
             BillRepairs billRepairs = billRepairsMapper.selectOne(LQW);
-            Repairs repairs = repairsMapper.selectById(billRepairs.getRepairId());
-            repairs.setStatus(RepairStatus.REPAIRED);
-            repairsMapper.updateById(repairs);
+            if(!StrUtil.isEmptyIfStr(billRepairs)){
+                Repairs repairs = repairsMapper.selectById(billRepairs.getRepairId());
+                repairs.setStatus(RepairStatus.REPAIRED);
+                repairsMapper.updateById(repairs);
+            }
             return R.ok("缴费成功");
         }
     }
@@ -172,6 +180,8 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
         LocalDateTime startTime = billRecordQuery.getStartTime();
         LocalDateTime endTime = billRecordQuery.getEndTime();
         BillPaymentStatus status = billRecordQuery.getStatus();
+        Long curUserId = billRecordQuery.getCurUserId();
+        User curUser = userMapper.selectById(curUserId);
         LambdaQueryWrapper<BillRecords> LQW = new LambdaQueryWrapper<>();
         LQW.like(address!=null ,BillRecords::getAddress,address)
                 .eq(building!=null,BillRecords::getBuilding,building)
@@ -180,7 +190,8 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
                 .eq(amountName!=null,BillRecords::getAmountName,amountName)
                 .ge(startTime!=null,BillRecords::getDate,startTime)
                 .le(endTime!=null,BillRecords::getDate,endTime)
-                .eq(status!=null,BillRecords::getStatus,status);
+                .eq(status!=null,BillRecords::getStatus,status)
+                .eq((curUser!=null)&&(curUser.getRoleId()==UserRole.USER),BillRecords::getUserId,curUserId);
         billRecordsMapper.selectPage(page,LQW);
         //3.返回结果
         return PageDTO.of(page,billRecords -> {

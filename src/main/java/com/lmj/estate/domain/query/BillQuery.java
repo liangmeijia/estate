@@ -13,6 +13,10 @@ import lombok.Data;
 @Data
 public class BillQuery extends PageQuery{
     /**
+     * 当前用户id
+     */
+    private Long curUserId;
+    /**
      * 地址
      */
     private String address;

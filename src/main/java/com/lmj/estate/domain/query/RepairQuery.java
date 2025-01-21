@@ -19,9 +19,9 @@ import java.time.LocalDateTime;
 @Data
 public class RepairQuery extends PageQuery{
     /**
-     * 申请人姓名
+     * 当前用户id
      */
-    private String applicantName;
+    private Long curUserId;
 
     /**
      * 维修状态（0-待维修；1-维修中；2-维修完成）

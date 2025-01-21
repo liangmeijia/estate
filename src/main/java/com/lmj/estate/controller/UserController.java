@@ -1,9 +1,6 @@
 package com.lmj.estate.controller;
 
-import com.lmj.estate.domain.DTO.BalancePaymentDTO;
-import com.lmj.estate.domain.DTO.PageDTO;
-import com.lmj.estate.domain.DTO.UserAddDTO;
-import com.lmj.estate.domain.DTO.UserUpdateDTO;
+import com.lmj.estate.domain.DTO.*;
 import com.lmj.estate.domain.VO.BalanceRecordVO;
 import com.lmj.estate.domain.VO.UserVO;
 import com.lmj.estate.domain.common.R;
@@ -122,5 +119,25 @@ public class UserController {
     @PostMapping("/balanceRecords")
     public R<PageDTO<BalanceRecordVO>> getBalanceRecords(@RequestBody BalanceRecordQuery balanceRecordQuery){
         return R.ok(userService.getBalanceRecords(balanceRecordQuery));
+    }
+
+    /**
+     * 重置密码
+     * @param id 用户id
+     * @return 初始化密码
+     */
+    @PutMapping("/user/{id}")
+    public R<Void> resetPassword(@PathVariable Long id){
+        return userService.resetPassword(id);
+    }
+
+    /**
+     * 修改个人密码
+     * @param updatePasswordDTO 修改条件
+     * @return 是否成功
+     */
+    @PostMapping("/user/updatePassword")
+    public R<Void> updatePassword(@Valid @RequestBody UpdatePasswordDTO updatePasswordDTO){
+        return userService.updatePassword(updatePasswordDTO);
     }
 }

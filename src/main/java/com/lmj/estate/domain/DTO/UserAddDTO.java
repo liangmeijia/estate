@@ -12,8 +12,6 @@ import javax.validation.constraints.NotNull;
 public class UserAddDTO {
     @NotBlank(message = "姓名不能为空")
     private String name;
-    @NotBlank(message = "密码不能为空")
-    private String password;
     private Integer age;
     private UserSex sex;
     @NotBlank(message = "电话不能为空")

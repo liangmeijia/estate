@@ -15,6 +15,10 @@ import java.time.LocalDateTime;
 @Data
 public class BillRecordQuery extends PageQuery{
     /**
+     * 当前用户id
+     */
+    private Long curUserId;
+    /**
      * 地址
      */
     private String address;

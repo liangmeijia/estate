@@ -8,11 +8,13 @@ import com.lmj.estate.dao.*;
 import com.lmj.estate.domain.DTO.PageDTO;
 import com.lmj.estate.domain.DTO.ProcessRepairDTO;
 import com.lmj.estate.domain.DTO.RepairAddDTO;
+import com.lmj.estate.domain.DTO.RepairUpdateDTO;
 import com.lmj.estate.domain.VO.RepairDetailVO;
 import com.lmj.estate.domain.VO.RepairVO;
 import com.lmj.estate.domain.common.R;
 import com.lmj.estate.domain.enums.BillPaymentStatus;
 import com.lmj.estate.domain.enums.RepairStatus;
+import com.lmj.estate.domain.enums.UserRole;
 import com.lmj.estate.domain.query.RepairQuery;
 import com.lmj.estate.entity.Bill;
 import com.lmj.estate.entity.BillRepairs;
@@ -40,13 +42,12 @@ public class RepairsServiceImpl extends ServiceImpl<RepairsMapper, Repairs> impl
     @Override
     public R<Void> addRepair(RepairAddDTO repairsAddDTO) {
         //1.
-        User user = userMapper.selectOneByName(repairsAddDTO.getApplicantName());
+        User user = userMapper.selectById(repairsAddDTO.getApplicantId());
         if(StrUtil.isEmptyIfStr(user)){
             return R.no("无此业主，请重新填写申请人姓名");
         }
         //2.
         Repairs repairs = BeanUtil.copyProperties(repairsAddDTO, Repairs.class);
-        repairs.setApplicantId(user.getId());
         repairs.setStatus(RepairStatus.UNDER_REPAIR);
         repairs.setCreateTime(LocalDateTime.now());
         try {
@@ -99,17 +100,26 @@ public class RepairsServiceImpl extends ServiceImpl<RepairsMapper, Repairs> impl
     public PageDTO<RepairVO> getRepairs(RepairQuery repairQuery) {
         Page<Repairs> page = repairQuery.toMpPageDefaultByCreateTime();
 
-        String applicantName = repairQuery.getApplicantName();
         RepairStatus status = repairQuery.getStatus();
         LocalDateTime startTime = repairQuery.getStartTime();
         LocalDateTime endTime = repairQuery.getEndTime();
-        lambdaQuery().eq(applicantName!=null,Repairs::getApplicantName,applicantName)
-                .eq(status!=null,Repairs::getStatus,status)
+        Long curUserId = repairQuery.getCurUserId();
+        User curUser = userMapper.selectById(curUserId);
+        lambdaQuery().eq(status!=null,Repairs::getStatus,status)
                 .ge(startTime!=null,Repairs::getStartTime,startTime)
                 .le(endTime!=null,Repairs::getEndTime,endTime)
+                .eq((curUser!=null)&&(curUser.getRoleId()== UserRole.USER),Repairs::getApplicantId,curUserId)
                 .page(page);
 
-        return PageDTO.of(page,RepairVO.class);
+        return PageDTO.of(page,repairs -> {
+            RepairVO repairVO = BeanUtil.copyProperties(repairs, RepairVO.class);
+            User user = userMapper.selectById(repairs.getApplicantId());
+            if(!StrUtil.isEmptyIfStr(user)){
+                repairVO.setApplicantName(user.getName());
+                repairVO.setApplicantPhone(user.getPhone());
+            }
+            return repairVO;
+        });
     }
 
     @Override
@@ -121,4 +131,18 @@ public class RepairsServiceImpl extends ServiceImpl<RepairsMapper, Repairs> impl
             return R.ok(BeanUtil.copyProperties(repairs, RepairDetailVO.class));
         }
     }
+
+    @Override
+    public R<Void> updateRepair(RepairUpdateDTO repairUpdateDTO) {
+        Repairs repairs = BeanUtil.copyProperties(repairUpdateDTO, Repairs.class);
+        repairs.setUpdateTime(LocalDateTime.now());
+        try {
+            baseMapper.updateById(repairs);
+            return R.ok();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.no();
+        }
+    }
+
 }

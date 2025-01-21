@@ -36,15 +36,27 @@ public class RepairVO {
     private RepairStatus status;
 
     /**
-     * 维修开始日期
+     * 申请人地址
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime startTime;
+    private String address;
 
     /**
-     * 维修截至日期
+     * 栋
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime endTime;
+    private String building;
+
+    /**
+     * 单元
+     */
+    private String unit;
+
+    /**
+     * 门牌号
+     */
+    private String number;
+    /**
+     * 维修申请事由
+     */
+    private String reason;
 
 }

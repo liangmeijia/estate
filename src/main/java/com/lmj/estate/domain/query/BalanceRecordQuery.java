@@ -15,6 +15,10 @@ import java.time.LocalDateTime;
 @Data
 public class BalanceRecordQuery extends PageQuery{
     /**
+     * 当前用户id
+     */
+    private Long curUserId;
+    /**
      * 充值日期的开始日期
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

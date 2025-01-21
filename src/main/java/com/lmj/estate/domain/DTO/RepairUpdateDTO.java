@@ -3,15 +3,18 @@ package com.lmj.estate.domain.DTO;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author lmj
  * @version 1.0
  * @description
- * @date 2025/01/20 15:25:29
+ * @date 2025/01/21 23:54:17
  */
 @Data
-public class RepairAddDTO {
+public class RepairUpdateDTO {
+    @NotNull(message = "id不能为空")
+    private Long id;
     /**
      * 申请人id
      */
@@ -46,5 +49,4 @@ public class RepairAddDTO {
      */
     @NotEmpty(message = "维修申请事由不能为空")
     private String reason;
-
 }

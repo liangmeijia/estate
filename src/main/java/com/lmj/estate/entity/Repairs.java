@@ -26,16 +26,6 @@ public class Repairs implements Serializable {
     private Long applicantId;
 
     /**
-     * 申请人姓名
-     */
-    private String applicantName;
-
-    /**
-     * 申请人电话
-     */
-    private String applicantPhone;
-
-    /**
      * 申请人地址
      */
     private String address;
