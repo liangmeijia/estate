@@ -7,7 +7,6 @@ import com.lmj.estate.domain.VO.BalanceRecordVO;
 import com.lmj.estate.domain.VO.UserLoginVO;
 import com.lmj.estate.domain.VO.UserVO;
 import com.lmj.estate.domain.common.R;
-import com.lmj.estate.domain.enums.BalancePaymentMethod;
 import com.lmj.estate.domain.query.BalanceRecordQuery;
 import com.lmj.estate.domain.query.UserQuery;
 import com.lmj.estate.entity.User;

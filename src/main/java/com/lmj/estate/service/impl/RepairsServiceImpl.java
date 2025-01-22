@@ -128,7 +128,13 @@ public class RepairsServiceImpl extends ServiceImpl<RepairsMapper, Repairs> impl
         if(StrUtil.isEmptyIfStr(repairs)){
             return R.no("无此维修申请");
         }else {
-            return R.ok(BeanUtil.copyProperties(repairs, RepairDetailVO.class));
+            RepairDetailVO repairDetailVO = BeanUtil.copyProperties(repairs, RepairDetailVO.class);
+            User user = userMapper.selectById(repairs.getApplicantId());
+            if(!StrUtil.isEmptyIfStr(user)){
+                repairDetailVO.setApplicantName(user.getName());
+                repairDetailVO.setApplicantPhone(user.getPhone());
+            }
+            return R.ok(repairDetailVO);
         }
     }
 
