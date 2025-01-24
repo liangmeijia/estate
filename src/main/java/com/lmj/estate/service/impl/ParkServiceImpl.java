@@ -45,13 +45,9 @@ public class ParkServiceImpl extends ServiceImpl<ParkMapper, Park> implements Pa
         }
         //1.
         park.setCreateTime(LocalDateTime.now());
-        try {
-            baseMapper.insert(park);
-            return R.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return R.no();
-        }
+        baseMapper.insert(park);
+        return R.ok();
+
     }
 
     @Override
@@ -67,13 +63,9 @@ public class ParkServiceImpl extends ServiceImpl<ParkMapper, Park> implements Pa
         }
         //1.
         park.setUpdateTime(LocalDateTime.now());
-        try {
-            baseMapper.updateById(park);
-            return R.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return R.no();
-        }
+        baseMapper.updateById(park);
+        return R.ok();
+
     }
 
     @Override

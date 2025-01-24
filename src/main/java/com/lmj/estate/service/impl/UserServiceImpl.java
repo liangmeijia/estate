@@ -22,9 +22,11 @@ import com.lmj.estate.utils.JwtUtils;
 import com.lmj.estate.utils.PasswordUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
@@ -46,7 +48,9 @@ import static com.lmj.estate.domain.constant.ManageConst.INIT_PASSWORD;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     private final MenuMapper menuMapper;
     private final BalanceRecordsMapper balanceRecordsMapper;
+    private final TransactionTemplate transactionTemplate;
     private final String[] headers = {"姓名","密码","年龄","性别","电话","邮件","余额","角色","状态"};
+
     @Override
     public R<String> increaseBalance(BalancePaymentDTO balancePaymentDTO) {
         Long id = balancePaymentDTO.getUserId();
@@ -64,19 +68,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         balanceRecords.setDate(now);
         balanceRecords.setMethod(method);
         balanceRecords.setCreateTime(now);
-        //余额充值
-        try {
-            baseMapper.increaseBalance(id,balance);
-            //添加成功充值的记录
-            balanceRecords.setStatus(BalancePaymentStatus.PAYMENT_SUCCESS);
-            balanceRecordsMapper.insert(balanceRecords);
-            return R.ok("充值成功");
-        }catch (Exception e){
-            //添加失败充值的记录
-            balanceRecords.setStatus(BalancePaymentStatus.PAYMENT_FAILED);
-            balanceRecordsMapper.insert(balanceRecords);
-            return R.ok("充值失败");
-        }
+        //编程式事务
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                try {
+                    baseMapper.increaseBalance(id, balance);
+                    // 添加成功充值的记录
+                    balanceRecords.setStatus(BalancePaymentStatus.PAYMENT_SUCCESS);
+                    balanceRecordsMapper.insert(balanceRecords);
+                } catch (Exception e) {
+                    // 回滚事务
+                    status.setRollbackOnly();
+                    // 添加失败充值的记录
+                    balanceRecords.setStatus(BalancePaymentStatus.PAYMENT_FAILED);
+                    balanceRecordsMapper.insert(balanceRecords);
+                }
+            }
+        });
+        return R.ok("充值成功");
     }
     @Override
     public PageDTO<UserVO> findUsersPage(Long pageNum, Long pageSize, String name, UserStatus status, UserRole roleId) {
@@ -151,13 +161,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = BeanUtil.copyProperties(userDTO,User.class);
         user.setCreateTime(LocalDateTime.now());
         user.setPassword(PasswordUtil.hashPassword(INIT_PASSWORD));
-        try {
-            baseMapper.insert(user);
-            return R.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return R.no();
-        }
+        baseMapper.insert(user);
+        return R.ok();
+
     }
 
     @Override
@@ -172,113 +178,99 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public R<Void> updateUser(UserUpdateDTO userDTO) {
         User user = BeanUtil.copyProperties(userDTO,User.class);
         user.setUpdateTime(LocalDateTime.now());
-        try {
-            baseMapper.updateById(user);
-            return R.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return R.no();
-        }
+        baseMapper.updateById(user);
+        return R.ok();
+
     }
 
     @Override
-    public R<String> importUsers(MultipartFile file){
-        try (InputStream inputStream = file.getInputStream()) {
-            Workbook workbook = new XSSFWorkbook(inputStream);
-            Sheet sheet = workbook.getSheetAt(0);
-            Iterator<Row> rows = sheet.iterator();
-            // 1.验证表头信息
-            if (rows.hasNext()) {
-                Row row = rows.next();
-                if(row.getLastCellNum()!=9){
-                    return R.no("文档标题个数不符合模板要求");
-                }
-                for(int i =0;i<headers.length;i++){
-                    if(!headers[i].equals(row.getCell(i).getStringCellValue())){
-                        return R.no("文档标题不符合模板要求");
-                    }
-                }
-            }else {
-                return R.no("文档为空");
+    public R<String> importUsers(MultipartFile file) throws Exception{
+        InputStream inputStream = file.getInputStream();
+        Workbook workbook = new XSSFWorkbook(inputStream);
+        Sheet sheet = workbook.getSheetAt(0);
+        Iterator<Row> rows = sheet.iterator();
+        // 1.验证表头信息
+        if (rows.hasNext()) {
+            Row row = rows.next();
+            if(row.getLastCellNum()!=9){
+                return R.no("文档标题个数不符合模板要求");
             }
-            //2.保存用户信息
-            List<User> users = new ArrayList<>();
-            while (rows.hasNext()) {
-                Row row = rows.next();
-                User user = new User();
-                if(row.getLastCellNum()!=9){
-                    return R.no("用户信息个数错误");
+            for(int i =0;i<headers.length;i++){
+                if(!headers[i].equals(row.getCell(i).getStringCellValue())){
+                    return R.no("文档标题不符合模板要求");
                 }
-                user.setName(row.getCell(0).getStringCellValue());
-                row.getCell(1).setCellType(CellType.STRING); // 密码强制设置为字符串类
-                user.setPassword(PasswordUtil.hashPassword(row.getCell(1).getStringCellValue()));
-                user.setAge((int) row.getCell(2).getNumericCellValue());
-                user.setSex(UserSex.fromDesc(row.getCell(3).getStringCellValue()));
-                row.getCell(4).setCellType(CellType.STRING); // 电话强制设置为字符串类
-                user.setPhone(row.getCell(4).getStringCellValue());
-                user.setEmail(row.getCell(5).getStringCellValue());
-                user.setBalance(row.getCell(6).getNumericCellValue());
-                user.setRoleId(UserRole.fromDesc(row.getCell(7).getStringCellValue()));
-                user.setStatus(UserStatus.fromDesc(row.getCell(8).getStringCellValue()));
-                user.setCreateTime(LocalDateTime.now());
-                users.add(user);
             }
-            // 将所有用户信息保存到数据库
-            baseMapper.batchInsert(users);
-            // 关闭资源
-            workbook.close();
-        }catch (IOException e){
-            return R.no("读取文档出错");
-        }catch (IllegalStateException e){
-            return R.no("用户信息类型转换出错");
-        }catch (Exception e){
-            return R.no("插入用户信息出错");
+        }else {
+            return R.no("文档为空");
         }
+        //2.保存用户信息
+        List<User> users = new ArrayList<>();
+        while (rows.hasNext()) {
+            Row row = rows.next();
+            User user = new User();
+            if(row.getLastCellNum()!=9){
+                return R.no("用户信息个数错误");
+            }
+            user.setName(row.getCell(0).getStringCellValue());
+            row.getCell(1).setCellType(CellType.STRING); // 密码强制设置为字符串类
+            user.setPassword(PasswordUtil.hashPassword(row.getCell(1).getStringCellValue()));
+            user.setAge((int) row.getCell(2).getNumericCellValue());
+            user.setSex(UserSex.fromDesc(row.getCell(3).getStringCellValue()));
+            row.getCell(4).setCellType(CellType.STRING); // 电话强制设置为字符串类
+            user.setPhone(row.getCell(4).getStringCellValue());
+            user.setEmail(row.getCell(5).getStringCellValue());
+            user.setBalance(row.getCell(6).getNumericCellValue());
+            user.setRoleId(UserRole.fromDesc(row.getCell(7).getStringCellValue()));
+            user.setStatus(UserStatus.fromDesc(row.getCell(8).getStringCellValue()));
+            user.setCreateTime(LocalDateTime.now());
+            users.add(user);
+        }
+        // 将所有用户信息保存到数据库
+        baseMapper.batchInsert(users);
+        // 关闭资源
+        workbook.close();
         return R.ok();
     }
-    public void exportUsers(UserQuery userQuery, HttpServletResponse  response){
+    public void exportUsers(UserQuery userQuery, HttpServletResponse  response) throws Exception{
         // 0.查询当前页用户信息
         List<UserVO> userVOS = findUsersPage(userQuery).getRecords();
-        try {
-            Workbook workbook = new XSSFWorkbook();
-            Sheet sheet = workbook.createSheet("Users");
-            // 1.创建表头
-            Row headerRow = sheet.createRow(0);
-            for (int i = 0; i < headers.length; i++) {
-                Cell cell = headerRow.createCell(i);
-                cell.setCellValue(headers[i]);
-            }
-            // 2.填充数据
-            int rowIndex = 1;
-            for (UserVO user : userVOS) {
-                Row row = sheet.createRow(rowIndex++);
-                row.createCell(0).setCellValue(user.getName());
-                row.createCell(1).setCellValue(user.getPassword());
-                row.createCell(2).setCellValue(user.getAge());
-                row.createCell(3).setCellValue(user.getSex().getDesc());
-                row.createCell(4).setCellValue(user.getPhone());
-                row.createCell(5).setCellValue(user.getEmail());
-                row.createCell(6).setCellValue(user.getBalance());
-                row.createCell(7).setCellValue(user.getRoleId().getDesc());
-                row.createCell(8).setCellValue(user.getStatus().getDesc());
-            }
 
-            // 3.自动调整列宽
-            for (int i = 0; i < headers.length; i++) {
-                sheet.autoSizeColumn(i);
-            }
-            // 4.设置响应头
-            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            response.setHeader("Content-Disposition",  "attachment; filename=users.xlsx");
-
-            // 5.将工作簿写入响应流
-            OutputStream outputStream = response.getOutputStream();
-            workbook.write(outputStream);
-            outputStream.close();
-            workbook.close();
-        }catch (Exception e){
-            e.printStackTrace();
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Users");
+        // 1.创建表头
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
         }
+        // 2.填充数据
+        int rowIndex = 1;
+        for (UserVO user : userVOS) {
+            Row row = sheet.createRow(rowIndex++);
+            row.createCell(0).setCellValue(user.getName());
+            row.createCell(1).setCellValue(user.getPassword());
+            row.createCell(2).setCellValue(user.getAge());
+            row.createCell(3).setCellValue(user.getSex().getDesc());
+            row.createCell(4).setCellValue(user.getPhone());
+            row.createCell(5).setCellValue(user.getEmail());
+            row.createCell(6).setCellValue(user.getBalance());
+            row.createCell(7).setCellValue(user.getRoleId().getDesc());
+            row.createCell(8).setCellValue(user.getStatus().getDesc());
+        }
+
+        // 3.自动调整列宽
+        for (int i = 0; i < headers.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+        // 4.设置响应头
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition",  "attachment; filename=users.xlsx");
+
+        // 5.将工作簿写入响应流
+        OutputStream outputStream = response.getOutputStream();
+        workbook.write(outputStream);
+        outputStream.close();
+        workbook.close();
     }
 
     @Override
@@ -320,13 +312,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setStatus(UserStatus.NORMAL);
         user.setCreateTime(LocalDateTime.now());
         //2.
-        try {
-            baseMapper.insert(user);
-            return R.ok("注册成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return R.no("注册失败");
-        }
+        baseMapper.insert(user);
+        return R.ok("注册成功");
+
     }
 
     @Override
@@ -337,19 +325,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         //初始化密码
         user.setPassword(PasswordUtil.hashPassword(INIT_PASSWORD));
-        try {
-            baseMapper.updateById(user);
-            return R.ok("初始化密码： "+INIT_PASSWORD);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return R.no("重置密码失败");
-        }
-
-
+        baseMapper.updateById(user);
+        return R.ok("初始化密码： "+INIT_PASSWORD);
     }
 
     @Override
-    public R<Void> updatePassword(UpdatePasswordDTO updatePasswordDTO) {
+    public R<Void> updatePassword(UpdatePasswordDTO updatePasswordDTO){
         User user = baseMapper.selectById(updatePasswordDTO.getUserId());
         if(StrUtil.isEmptyIfStr(user)){
             return R.no("无此用户");
@@ -363,13 +344,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return R.no("确认密码错误");
         }
         user.setPassword(PasswordUtil.hashPassword(updatePasswordDTO.getNewPassword()));
-        try {
-            baseMapper.updateById(user);
-            return R.ok("修改密码成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return R.no("修改密码出错");
-        }
 
+        baseMapper.updateById(user);
+        return R.ok("修改密码成功");
     }
 }

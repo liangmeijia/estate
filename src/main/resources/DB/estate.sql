@@ -11,7 +11,7 @@
  Target Server Version : 80031 (8.0.31)
  File Encoding         : 65001
 
- Date: 22/01/2025 00:19:09
+ Date: 24/01/2025 17:39:14
 */
 
 SET NAMES utf8mb4;
@@ -32,11 +32,7 @@ CREATE TABLE `balance_records`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '充值记录表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of balance_records
--- ----------------------------
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '充值记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for bill
@@ -57,11 +53,7 @@ CREATE TABLE `bill`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '账单表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of bill
--- ----------------------------
+) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '账单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for bill_records
@@ -82,18 +74,14 @@ CREATE TABLE `bill_records`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '缴费记录表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of bill_records
--- ----------------------------
+) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '缴费记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for bill_repairs
 -- ----------------------------
 DROP TABLE IF EXISTS `bill_repairs`;
 CREATE TABLE `bill_repairs`  (
-  `id` bigint NOT NULL COMMENT '主键',
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `bill_id` bigint NOT NULL COMMENT '账单id',
   `repair_id` bigint NOT NULL COMMENT '维修单id',
   `delete_flag` int NOT NULL DEFAULT 0,
@@ -101,11 +89,7 @@ CREATE TABLE `bill_repairs`  (
   `update_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `bill_id`(`bill_id` ASC, `repair_id` ASC) USING BTREE COMMENT '账单和维修申请是一对一关系'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '维修-账单关系表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of bill_repairs
--- ----------------------------
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '维修-账单关系表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for complaints
@@ -114,8 +98,6 @@ DROP TABLE IF EXISTS `complaints`;
 CREATE TABLE `complaints`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `applicant_id` bigint NOT NULL COMMENT '申请人id',
-  `applicant_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '申请人姓名',
-  `applicant_phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '申请人电话',
   `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '投诉申请事由',
   `status` int NOT NULL DEFAULT 1 COMMENT '投诉状态（0-待处理；1-已处理）',
   `result` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '处理结果',
@@ -123,11 +105,7 @@ CREATE TABLE `complaints`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '投诉表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of complaints
--- ----------------------------
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '投诉表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for house
@@ -150,12 +128,6 @@ CREATE TABLE `house`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '房产表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of house
--- ----------------------------
-INSERT INTO `house` VALUES (12, '幸福满庭', '14', '1', '301', 90.00, 1000000.00, 57, 0, '2025-01-21 10:57:54', '2025-01-21 14:58:48');
-INSERT INTO `house` VALUES (13, '幸福满庭', '14', '1', '302', 78.00, 800000.00, 58, 0, '2025-01-21 15:03:13', NULL);
-
--- ----------------------------
 -- Table structure for menu
 -- ----------------------------
 DROP TABLE IF EXISTS `menu`;
@@ -176,20 +148,6 @@ CREATE TABLE `menu`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Records of menu
--- ----------------------------
-INSERT INTO `menu` VALUES (1, 'B01', '权限管理', '1', '', 'Admin', '0', 'admin/AdminManage', 'el-icon-s-custom', 0, '2025-01-09 09:30:44', NULL);
-INSERT INTO `menu` VALUES (2, 'B02', '业主信息管理', '1', '', 'User', '0,1', 'user/UserManage', 'el-icon-user-solid', 0, '2025-01-09 09:30:44', NULL);
-INSERT INTO `menu` VALUES (3, 'B03', '房屋管理', '2', 'A01', 'House', '0,1', 'user/HouseManage', '', 0, '2025-01-14 11:29:53', NULL);
-INSERT INTO `menu` VALUES (4, 'B04', '车位管理', '2', 'A01', 'Park', '0,1', 'user/ParkManage', '', 0, '2025-01-14 11:37:46', NULL);
-INSERT INTO `menu` VALUES (5, 'A01', '房屋及设施管理', '1', NULL, '', '0,1', '', 'el-icon-office-building', 0, '2025-01-14 15:36:32', NULL);
-INSERT INTO `menu` VALUES (6, 'A02', '物业费用管理', '1', NULL, NULL, '0,1', NULL, 'el-icon-wallet', 0, '2025-01-15 14:13:18', NULL);
-INSERT INTO `menu` VALUES (7, 'B05', '账单管理', '2', 'A02', 'Bill', '0,1', 'user/BillManage', '', 0, '2025-01-15 14:15:33', NULL);
-INSERT INTO `menu` VALUES (8, 'B06', '缴费记录', '2', 'A02', 'BillRecords', '0,1', 'user/BillRecordsManage', NULL, 0, '2025-01-15 14:17:44', NULL);
-INSERT INTO `menu` VALUES (9, 'B07', '充值记录', '2', 'A02', 'BalanceRecords', '0,1', 'user/BalanceRecordsManage', NULL, 0, '2025-01-15 14:18:26', NULL);
-INSERT INTO `menu` VALUES (10, 'B08', '维修管理', '1', NULL, 'Repair', '0,1', 'user/RepairManage', 'el-icon-setting', 0, '2025-01-21 11:02:04', NULL);
-
--- ----------------------------
 -- Table structure for notice
 -- ----------------------------
 DROP TABLE IF EXISTS `notice`;
@@ -201,11 +159,7 @@ CREATE TABLE `notice`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '公告表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of notice
--- ----------------------------
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '公告表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for park
@@ -227,10 +181,6 @@ CREATE TABLE `park`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '车位表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of park
--- ----------------------------
-
--- ----------------------------
 -- Table structure for repairs
 -- ----------------------------
 DROP TABLE IF EXISTS `repairs`;
@@ -250,11 +200,7 @@ CREATE TABLE `repairs`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '维修表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of repairs
--- ----------------------------
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '维修表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for user
@@ -276,15 +222,6 @@ CREATE TABLE `user`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name`(`name` ASC) USING BTREE COMMENT '用户名唯一'
-) ENGINE = InnoDB AUTO_INCREMENT = 61 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of user
--- ----------------------------
-INSERT INTO `user` VALUES (55, '物业总部', '$2a$10$fbvOGolvcyleSKOohkI8MOXexUe8sYP2ZtzYUp87lWyK.MwB5Z3Qm', 41, 0, '19983247646', '19983247636@qq.com', 27.00, 0, 0, 0, '2025-01-21 08:57:06', '2025-01-21 09:18:08');
-INSERT INTO `user` VALUES (57, 'test', '$2a$10$8NqLCcpE8NbGdYFCt4e6E.VJU2iD5tXFqYQGfBZpE9GYkYj2Xzq0u', 22, 1, '13335678900', '13335678900@163.com', 2.00, 1, 0, 0, '2025-01-21 09:36:35', '2025-01-21 09:36:49');
-INSERT INTO `user` VALUES (58, '业主1', '$2a$10$KIMTcMvSL.sHJH9fFTsQiuPvxaC8AXVKsLo7Zk/zfskIXZvqx1Mie', 23, 1, '15188764435', '13188764435@163.net', 0.00, 1, 0, 0, '2025-01-21 09:39:33', NULL);
-INSERT INTO `user` VALUES (59, '业主2', '$2a$10$KMTkCDwwc7Qns2/43dOev./zQArXPiTymn2Cukt1OPHg9IstTjSo6', 43, 1, '13798762343', '13798762343@yeah.net', 100.00, 1, 0, 0, '2025-01-21 09:39:33', NULL);
-INSERT INTO `user` VALUES (60, '业主3', '$2a$10$B.zmM/WKPSEhmbok0Ik8neOXIiiP5Waoi1cdhbFc0BuB4W4pljBtO', 34, 0, '18188762767', '18188762767@yeah.net', 0.00, 1, 0, 0, '2025-01-21 09:39:33', NULL);
+) ENGINE = InnoDB AUTO_INCREMENT = 62 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;

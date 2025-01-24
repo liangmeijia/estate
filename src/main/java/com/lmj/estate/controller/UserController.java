@@ -99,7 +99,7 @@ public class UserController {
      * @return 是否成功
      */
     @PostMapping("/users/import")
-    public R<String> importUsers(@RequestParam("file") MultipartFile file) {
+    public R<String> importUsers(@RequestParam("file") MultipartFile file) throws Exception {
         return userService.importUsers(file);
     }
 
@@ -109,7 +109,7 @@ public class UserController {
      * @return 是否成功
      */
     @PostMapping("/users/export")
-    public void exportUsers(@RequestBody UserQuery userQuery, HttpServletResponse response) {
+    public void exportUsers(@RequestBody UserQuery userQuery, HttpServletResponse response) throws Exception{
         userService.exportUsers(userQuery, response);
     }
 

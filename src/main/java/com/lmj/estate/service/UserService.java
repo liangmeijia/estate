@@ -26,8 +26,8 @@ public interface UserService extends IService<User> {
     UserVO findUserVOById(long id);
     R<Void> updateUser(UserUpdateDTO userDTO);
 
-    R<String> importUsers(MultipartFile file);
-    void exportUsers(UserQuery userQuery, HttpServletResponse  response) ;
+    R<String> importUsers(MultipartFile file) throws Exception;
+    void exportUsers(UserQuery userQuery, HttpServletResponse  response) throws Exception;
 
     PageDTO<BalanceRecordVO> getBalanceRecords(BalanceRecordQuery balanceRecordQuery);
 

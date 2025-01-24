@@ -50,13 +50,9 @@ public class RepairsServiceImpl extends ServiceImpl<RepairsMapper, Repairs> impl
         Repairs repairs = BeanUtil.copyProperties(repairsAddDTO, Repairs.class);
         repairs.setStatus(RepairStatus.UNDER_REPAIR);
         repairs.setCreateTime(LocalDateTime.now());
-        try {
-            baseMapper.insert(repairs);
-            return R.ok("维修申请成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return R.no("维修申请失败");
-        }
+        baseMapper.insert(repairs);
+        return R.ok("维修申请成功");
+
 
     }
 
@@ -142,13 +138,8 @@ public class RepairsServiceImpl extends ServiceImpl<RepairsMapper, Repairs> impl
     public R<Void> updateRepair(RepairUpdateDTO repairUpdateDTO) {
         Repairs repairs = BeanUtil.copyProperties(repairUpdateDTO, Repairs.class);
         repairs.setUpdateTime(LocalDateTime.now());
-        try {
-            baseMapper.updateById(repairs);
-            return R.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return R.no();
-        }
+        baseMapper.updateById(repairs);
+        return R.ok();
     }
 
 }

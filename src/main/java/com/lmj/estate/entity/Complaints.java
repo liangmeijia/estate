@@ -25,16 +25,6 @@ public class Complaints implements Serializable {
     private Long applicantId;
 
     /**
-     * 申请人姓名
-     */
-    private String applicantName;
-
-    /**
-     * 申请人电话
-     */
-    private String applicantPhone;
-
-    /**
      * 投诉状态（0-待处理；1-已处理）
      */
     private ComplaintsStatus status;

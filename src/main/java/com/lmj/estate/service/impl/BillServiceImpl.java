@@ -19,7 +19,6 @@ import com.lmj.estate.domain.query.BillQuery;
 import com.lmj.estate.domain.query.BillRecordQuery;
 import com.lmj.estate.entity.*;
 import com.lmj.estate.service.BillService;
-import com.lmj.estate.utils.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,13 +85,9 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
         BeanUtil.copyProperties(billDTO,bill);
         bill.setUserId(house.getUserId());
         bill.setCreateTime(LocalDateTime.now());
-        try{
-            baseMapper.insert(bill);
-            return R.ok();
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.no();
-        }
+        baseMapper.insert(bill);
+        return R.ok();
+
     }
 
     @Override
@@ -106,13 +101,8 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
         Bill bill = new Bill();
         BeanUtil.copyProperties(billDTO,bill);
         bill.setUpdateTime(LocalDateTime.now());
-        try {
-            baseMapper.updateById(bill);
-            return R.ok();
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.no();
-        }
+        baseMapper.updateById(bill);
+        return R.ok();
     }
 
     @Override
@@ -135,6 +125,7 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements Bi
         billRecords.setDate(now);
         billRecords.setCreateTime(now);
         billRecords.setUserId(userId);
+
         if(balance<price){
             //余额不足，更新账单的缴费状态
             bill.setStatus(BillPaymentStatus.PAYMENT_FAILED);

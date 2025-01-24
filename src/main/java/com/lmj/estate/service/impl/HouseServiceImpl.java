@@ -44,13 +44,9 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
         }
         //设置创建时间
         house.setCreateTime(LocalDateTime.now());
-        try {
-            baseMapper.insert(house);
-            return R.ok();
-        }catch(Exception e){
-            e.printStackTrace();
-            return R.no();
-        }
+        baseMapper.insert(house);
+        return R.ok();
+
     }
 
     @Override
@@ -93,11 +89,7 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
         }
         //设置更新时间
         house.setUpdateTime(LocalDateTime.now());
-        try {
-            baseMapper.updateById(house);
-            return R.ok();
-        }catch (Exception e){
-            return R.no();
-        }
+        baseMapper.updateById(house);
+        return R.ok();
     }
 }
