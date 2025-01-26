@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lmj.estate.dao.ComplaintsMapper;
 import com.lmj.estate.dao.UserMapper;
 import com.lmj.estate.domain.DTO.ComplaintAddDTO;
+import com.lmj.estate.domain.DTO.ComplaintUpdateDTO;
 import com.lmj.estate.domain.DTO.PageDTO;
+import com.lmj.estate.domain.DTO.ProcessComplaintDTO;
 import com.lmj.estate.domain.VO.ComplaintVO;
 import com.lmj.estate.domain.common.R;
 import com.lmj.estate.domain.enums.ComplaintsStatus;
@@ -61,5 +63,51 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintsMapper, Complain
             }
             return complaintVO;
         });
+    }
+
+    @Override
+    public R<Void> updateComplaint(ComplaintUpdateDTO complaintUpdateDTO) {
+        Complaints complaints = baseMapper.selectById(complaintUpdateDTO.getId());
+        if(StrUtil.isEmptyIfStr(complaints)){
+            return R.no("无此投诉申请");
+        }
+        if(complaints.getStatus() == ComplaintsStatus.PROCESSED){
+            return R.no("已处理，无法修改");
+        }
+        complaints.setApplicantId(complaintUpdateDTO.getApplicantId());
+        complaints.setReason(complaints.getReason());
+        complaints.setUpdateTime(LocalDateTime.now());
+        baseMapper.updateById(complaints);
+        return R.ok("修改申请成功");
+    }
+
+    @Override
+    public R<Void> processComplaint(ProcessComplaintDTO processComplaintDTO) {
+        //0.
+        Long id = processComplaintDTO.getId();
+        String result = processComplaintDTO.getResult();
+
+        Complaints complaints = baseMapper.selectById(id);
+        if(StrUtil.isEmptyIfStr(complaints)){
+            return R.no("无此投诉申请");
+        }
+        if(complaints.getStatus() == ComplaintsStatus.PROCESSED){
+            return R.no("已处理，无法再次处理");
+        }
+        //1.
+        complaints.setResult(result);
+        complaints.setStatus(ComplaintsStatus.PROCESSED);
+        complaints.setUpdateTime(LocalDateTime.now());
+        return R.ok("处理成功");
+    }
+
+    @Override
+    public R<Void> delComplaint(Long id) {
+        Complaints complaints = baseMapper.selectById(id);
+        if(complaints.getStatus() == ComplaintsStatus.PROCESSED){
+            return R.no("已处理，无法删除");
+        }
+        baseMapper.deleteById(id);
+        return R.ok("删除成功");
     }
 }

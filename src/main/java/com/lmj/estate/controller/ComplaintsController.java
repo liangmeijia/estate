@@ -1,15 +1,15 @@
 package com.lmj.estate.controller;
 
 import com.lmj.estate.domain.DTO.ComplaintAddDTO;
+import com.lmj.estate.domain.DTO.ComplaintUpdateDTO;
 import com.lmj.estate.domain.DTO.PageDTO;
+import com.lmj.estate.domain.DTO.ProcessComplaintDTO;
 import com.lmj.estate.domain.VO.ComplaintVO;
 import com.lmj.estate.domain.common.R;
 import com.lmj.estate.domain.query.ComplaintQuery;
 import com.lmj.estate.service.ComplaintService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -42,6 +42,31 @@ public class ComplaintsController {
     @PostMapping("complaints")
     public R<PageDTO<ComplaintVO>> getComplaints(@Valid @RequestBody ComplaintQuery complaintsQuery){
         return R.ok(complaintService.getComplaints(complaintsQuery));
+    }
+
+    /**
+     * 修改投诉申请
+     * @param complaintUpdateDTO 修改条件
+     * @return 是否成功
+     */
+    @PutMapping("/complaint")
+    public R<Void> updateComplaint(@Valid @RequestBody ComplaintUpdateDTO complaintUpdateDTO){
+        return complaintService.updateComplaint(complaintUpdateDTO);
+    }
+
+    /**
+     * 删除投诉申请
+     * @param id 投诉申请id
+     * @return 是否成功
+     */
+    @DeleteMapping("/complaint/{id}")
+    public R<Void> delComplaint(@PathVariable Long id){
+        return complaintService.delComplaint(id);
+    }
+
+    @PostMapping("/complaint/process")
+    public R<Void> processComplaint(@Valid @RequestBody ProcessComplaintDTO processComplaintDTO){
+        return complaintService.processComplaint(processComplaintDTO);
     }
 
 }
