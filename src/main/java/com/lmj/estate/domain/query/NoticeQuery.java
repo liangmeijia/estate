@@ -1,8 +1,10 @@
 package com.lmj.estate.domain.query;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.lmj.estate.domain.enums.ReadStatus;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -13,7 +15,12 @@ import java.time.LocalDateTime;
  */
 @Data
 public class NoticeQuery extends PageQuery{
-    private String title;
+    @NotNull(message = "登录用户id不能为空")
+    private Long userId;
+    /**
+     * 公告的阅读状态
+     */
+    private ReadStatus status;
     /**
      * 创建时间的起始时间
      */

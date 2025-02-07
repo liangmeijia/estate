@@ -3,6 +3,8 @@ package com.lmj.estate.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lmj.estate.domain.DTO.NoticeAddDTO;
 import com.lmj.estate.domain.DTO.PageDTO;
+import com.lmj.estate.domain.VO.NoticeDetailVO;
+import com.lmj.estate.domain.VO.NoticeTitleTopVO;
 import com.lmj.estate.domain.VO.NoticeVO;
 import com.lmj.estate.domain.common.R;
 import com.lmj.estate.domain.query.NoticeQuery;
@@ -17,9 +19,15 @@ import java.util.List;
  * @date 2025/01/26 10:48:24
  */
 public interface NoticeService extends IService<Notice> {
-    R<List<String>> getNoticesTitleTop(Integer counts);
+    R<List<NoticeTitleTopVO>> getNoticesTitleTop(Integer counts,Long userId);
 
     PageDTO<NoticeVO> getNotices(NoticeQuery noticeQuery);
 
     R<Void> addNotice(NoticeAddDTO noticeAddDTO);
+
+    R<Long> getNoticesUnReadCounts(Long userId);
+
+    R<NoticeDetailVO> getNoticeDetail(Long noticeId,Long userId);
+
+    R<Void> delNotice(Long id);
 }
