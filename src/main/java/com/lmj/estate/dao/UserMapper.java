@@ -14,7 +14,7 @@ public interface UserMapper extends BaseMapper<User> {
     @Update("update user set balance = balance + #{balance} where id = #{id}")
     void increaseBalance(@Param("id") long id ,@Param("balance") Double balance);
     int batchInsert(@Param("users") List<User> users);
-    @Select("select * from user where name = #{name} ")
+    @Select("select * from user where name = #{name} and delete_flag = 0")
     User selectOneByName(@Param("name") String name);
 
 }

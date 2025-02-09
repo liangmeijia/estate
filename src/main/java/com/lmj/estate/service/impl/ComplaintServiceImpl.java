@@ -75,7 +75,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintsMapper, Complain
             return R.no("已处理，无法修改");
         }
         complaints.setApplicantId(complaintUpdateDTO.getApplicantId());
-        complaints.setReason(complaints.getReason());
+        complaints.setReason(complaintUpdateDTO.getReason());
         complaints.setUpdateTime(LocalDateTime.now());
         baseMapper.updateById(complaints);
         return R.ok("修改申请成功");
@@ -98,6 +98,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintsMapper, Complain
         complaints.setResult(result);
         complaints.setStatus(ComplaintsStatus.PROCESSED);
         complaints.setUpdateTime(LocalDateTime.now());
+        baseMapper.updateById(complaints);
         return R.ok("处理成功");
     }
 

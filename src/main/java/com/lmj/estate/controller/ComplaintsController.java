@@ -64,6 +64,11 @@ public class ComplaintsController {
         return complaintService.delComplaint(id);
     }
 
+    /**
+     * 处理投诉
+     * @param processComplaintDTO 处理信息
+     * @return 是否成功
+     */
     @PostMapping("/complaint/process")
     public R<Void> processComplaint(@Valid @RequestBody ProcessComplaintDTO processComplaintDTO){
         return complaintService.processComplaint(processComplaintDTO);

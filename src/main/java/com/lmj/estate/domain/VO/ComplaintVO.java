@@ -3,6 +3,7 @@ package com.lmj.estate.domain.VO;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lmj.estate.domain.enums.ComplaintsStatus;
 import lombok.Data;
 
@@ -41,6 +42,7 @@ public class ComplaintVO {
     /**
      * 创建时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
     /**
